@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build && npx tsx scripts/generate-seo.ts",
+    "build": "react-router build && npx tsx scripts/generate-seo.ts && cp build/client/__spa-fallback.html build/client/404.html",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
