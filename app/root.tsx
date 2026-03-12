@@ -117,32 +117,96 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "오류가 발생했습니다";
-  let details = "예상치 못한 오류가 발생했습니다.";
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
+
+  if (is404) {
+    return (
+      <div className="min-h-[80dvh] flex items-center justify-center px-8">
+        <div className="max-w-lg w-full text-center">
+          <div className="relative mb-8">
+            <span className="block font-heading text-[8rem] md:text-[10rem] font-bold leading-none tracking-tighter select-none bg-gradient-to-b from-white/[0.08] to-transparent bg-clip-text text-transparent">
+              404
+            </span>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="size-16 rounded-full bg-[rgba(139,92,246,0.08)] border border-[rgba(139,92,246,0.15)] flex items-center justify-center backdrop-blur-sm">
+                <span className="text-2xl text-[rgba(167,139,250,0.6)]">?</span>
+              </div>
+            </div>
+          </div>
+
+          <h1 className="font-heading font-semibold text-xl md:text-2xl text-white/90 mb-3">
+            페이지를 찾을 수 없습니다
+          </h1>
+          <p className="text-sm text-white/40 leading-relaxed mb-8 max-w-sm mx-auto">
+            요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(139,92,246,0.25)] bg-[rgba(139,92,246,0.08)] text-[rgba(167,139,250,0.9)] text-sm font-medium transition-all duration-200 hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.4)]"
+            >
+              홈으로 돌아가기
+            </a>
+            <a
+              href="/blog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] text-white/50 text-sm font-medium transition-all duration-200 hover:border-white/[0.12] hover:text-white/70"
+            >
+              블로그 둘러보기
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Non-404 errors
+  let statusCode = "";
+  let message = "예상치 못한 오류가 발생했습니다.";
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : `${error.status} 오류`;
-    details =
-      error.status === 404
-        ? "요청하신 페이지를 찾을 수 없습니다."
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    statusCode = String(error.status);
+    message = error.statusText || message;
+  } else if (error instanceof Error) {
+    message = import.meta.env.DEV ? error.message : message;
+    stack = import.meta.env.DEV ? error.stack : undefined;
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-24 text-center md:px-6 lg:px-8">
-      <h1 className="font-serif mb-4 text-6xl font-semibold tracking-tight text-primary">
-        {message}
-      </h1>
-      <p className="mb-8 text-lg text-muted-foreground">{details}</p>
-      {stack && (
-        <pre className="mx-auto max-w-2xl overflow-x-auto rounded-lg border border-border bg-muted p-4 text-left text-xs text-muted-foreground">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <div className="min-h-[80dvh] flex items-center justify-center px-8">
+      <div className="max-w-lg w-full text-center">
+        <div className="relative mb-8">
+          <span className="block font-heading text-[8rem] md:text-[10rem] font-bold leading-none tracking-tighter select-none bg-gradient-to-b from-white/[0.08] to-transparent bg-clip-text text-transparent">
+            {statusCode || "Oops"}
+          </span>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="size-16 rounded-full bg-[rgba(244,63,94,0.08)] border border-[rgba(244,63,94,0.15)] flex items-center justify-center backdrop-blur-sm">
+              <span className="text-2xl text-[rgba(251,113,133,0.7)]">!</span>
+            </div>
+          </div>
+        </div>
+
+        <h1 className="font-heading font-semibold text-xl md:text-2xl text-white/90 mb-3">
+          오류가 발생했습니다
+        </h1>
+        <p className="text-sm text-white/40 leading-relaxed mb-8 max-w-sm mx-auto">
+          {message}
+        </p>
+
+        {stack && (
+          <pre className="mx-auto max-w-2xl overflow-x-auto rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 text-left text-xs text-white/40 mb-8">
+            <code>{stack}</code>
+          </pre>
+        )}
+
+        <a
+          href="/"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(139,92,246,0.25)] bg-[rgba(139,92,246,0.08)] text-[rgba(167,139,250,0.9)] text-sm font-medium transition-all duration-200 hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.4)]"
+        >
+          홈으로 돌아가기
+        </a>
+      </div>
     </div>
   );
 }
