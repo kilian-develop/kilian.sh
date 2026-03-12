@@ -1,31 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 export function ReadingProgress() {
-  const [progress, setProgress] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
 
-    function handleScroll() {
+    function update() {
       const scrollTop = window.scrollY;
       const docHeight =
         document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0) {
-        setProgress((scrollTop / docHeight) * 100);
+      if (docHeight > 0 && barRef.current) {
+        const progress = Math.min(scrollTop / docHeight, 1);
+        barRef.current.style.transform = `scaleX(${progress})`;
+        barRef.current.style.opacity = progress > 0 ? "1" : "0";
       }
     }
 
+    function handleScroll() {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(update);
+    }
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   if (!mounted) return null;
 
   return createPortal(
-    <div className="reading-progress" style={{ width: `${progress}%` }} />,
+    <div ref={barRef} className="reading-progress" />,
     document.body
   );
 }

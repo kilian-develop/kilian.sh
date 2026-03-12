@@ -5,9 +5,9 @@ export const siteConfig = {
   description:
     "kilian의 기술 블로그 — Java, Spring, 클린 아키텍처 그리고 개발 이야기",
   role: "Backend Developer",
-  github: "https://github.com/kilian",
+  github: "https://github.com/kilian-develop",
   linkedin: "https://www.linkedin.com/in/%EB%AA%85%EA%B7%9C-%EB%B0%95-405917313/",
-  email: "kilian@example.com",
+  email: "audrb96@gmail.com",
 } as const;
 
 export const navItems = [
@@ -35,9 +35,9 @@ export const techTags = [
   "Java",
   "Spring Boot",
   "JPA",
+  "Kafka",
   "Clean Architecture",
   "DDD",
-  "Testing",
-  "TypeScript",
-  "React",
+  "MariaDB",
+  "MongoDB",
 ] as const;

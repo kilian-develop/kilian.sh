@@ -16,27 +16,26 @@ export function meta(_: Route.MetaArgs) {
 }
 
 const skills = {
-  Backend: ["Java", "Spring Boot", "JPA", "Kotlin", "Spring Security"],
-  Frontend: ["React", "TypeScript", "Tailwind CSS", "React Router"],
-  Infrastructure: ["Docker", "AWS", "GitHub Actions", "Linux"],
-  Database: ["PostgreSQL", "Redis", "MongoDB", "MySQL"],
+  Backend: ["Java", "Spring Boot", "Spring Framework", "JPA / Hibernate", "Spring Batch", "Spring Security"],
+  "Data & Messaging": ["Kafka", "MariaDB", "MongoDB"],
+  Infrastructure: ["Docker", "Git", "GitHub Actions", "Linux"],
+  "Architecture & Design": ["클린 아키텍처", "DDD", "마이크로서비스", "SOLID"],
 } as const;
 
-const experiences = [
-  {
-    role: "Backend Developer",
-    company: "스타트업 N",
-    period: "2023 — 현재",
-    description:
-      "Spring Boot 기반 서비스 설계 및 운영. 도메인 주도 설계와 테스트 가능한 아키텍처 도입을 주도했습니다.",
-  },
-  {
-    role: "Junior Backend Developer",
-    company: "스타트업 K",
-    period: "2021 — 2023",
-    description:
-      "REST API 개발 및 기존 레거시 코드 리팩토링. 처음으로 대용량 트래픽을 다루며 성능 최적화를 경험했습니다.",
-  },
+const philosophy = [
+  { title: "도메인 이해 우선", description: "기술보다 비즈니스 규칙을 먼저 이해합니다." },
+  { title: "SOLID 원칙", description: "확장성 있는 설계를 지향합니다." },
+  { title: "테스트 주도 개발", description: "안정적인 코드를 위해 테스트를 먼저 작성합니다." },
+  { title: "지속적인 학습", description: "새로운 기술과 패턴을 꾸준히 습득합니다." },
+] as const;
+
+const blogTopics = [
+  "객체지향 프로그래밍 — 설계 원칙과 패턴",
+  "아키텍처 설계 — 클린 아키텍처, 마이크로서비스",
+  "Spring Framework — 활용법과 Best Practice",
+  "Kafka — 메시지 처리와 실시간 데이터",
+  "데이터베이스 — MariaDB, MongoDB 활용",
+  "개발 도구 — Claude Code, Git 등",
 ] as const;
 
 const staggerClass = (i: number) =>
@@ -79,8 +78,11 @@ export default function About() {
           </div>
 
           <p className="animate-fade-up stagger-4 text-lg md:text-xl text-white/75 leading-relaxed max-w-2xl text-balance">
-            좋은 코드가 무엇인지 꾸준히 고민하는 백엔드 개발자입니다. 기술보다
-            설계를, 구현보다 왜(Why)를 먼저 생각합니다.
+            "좋은 설계는 변화에 유연하고, 좋은 코드는 의도를 명확히 합니다."
+          </p>
+          <p className="animate-fade-up stagger-5 text-base text-white/55 leading-relaxed max-w-2xl mt-4">
+            Java와 Spring Framework를 중심으로 백엔드 서비스를 개발하고 있습니다.
+            확장 가능하고 유지보수하기 쉬운 코드를 작성하는 것을 지향합니다.
           </p>
         </div>
       </section>
@@ -90,35 +92,31 @@ export default function About() {
         <div className="section-orb" />
       </div>
 
-      {/* ===== STORY SECTION ===== */}
+      {/* ===== PHILOSOPHY SECTION ===== */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-[1100px] mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-10">
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
-              Story
+              Philosophy
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
-              저에 대해
+              학습 철학
             </h2>
           </div>
 
-          <div className="animate-fade-up stagger-2 space-y-5 text-white/75 leading-relaxed max-w-3xl">
-            <p>
-              개발을 시작한 지 얼마 되지 않았을 때, 저는 "동작하는 코드"를
-              만드는 데만 집중했습니다. 그런데 코드가 쌓일수록 뭔가 잘못됐다는
-              느낌이 들기 시작했어요. 고치기 어렵고, 테스트하기도 힘들고,
-              같이 일하는 동료도 이해하기 어려운 코드였습니다.
-            </p>
-            <p>
-              그 이후로 클린 아키텍처, 도메인 주도 설계(DDD), SOLID 원칙을
-              공부하면서 설계의 중요성을 깨달았습니다. 지금은 "왜 이 계층에
-              이 로직이 있어야 하는가", "이 책임은 누가 져야 하는가"를
-              먼저 생각하며 코드를 작성합니다.
-            </p>
-            <p>
-              이 블로그는 그 고민의 흔적입니다. 정답을 제시하기보다는 제가
-              부딪힌 문제와 선택의 과정을 솔직하게 공유하고 싶습니다.
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-3xl">
+            {philosophy.map((item, i) => (
+              <div
+                key={item.title}
+                className={cn(
+                  "animate-fade-up glass-card p-5",
+                  staggerClass(i)
+                )}
+              >
+                <p className="font-medium text-white/85 mb-1.5">{item.title}</p>
+                <p className="text-sm text-white/45 leading-relaxed">{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -172,47 +170,29 @@ export default function About() {
         <div className="section-orb" />
       </div>
 
-      {/* ===== EXPERIENCE TIMELINE SECTION ===== */}
+      {/* ===== BLOG TOPICS SECTION ===== */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-[1100px] mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-12">
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
-              Experience
+              Topics
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
-              경력
+              블로그 주제
             </h2>
           </div>
 
-          <div className="relative space-y-0 max-w-3xl">
-            {/* Vertical timeline line */}
-            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06]" />
-
-            {experiences.map((exp, i) => (
+          <div className="space-y-3 max-w-3xl">
+            {blogTopics.map((topic, i) => (
               <div
-                key={`${exp.company}-${exp.period}`}
+                key={topic}
                 className={cn(
-                  "animate-fade-up relative pl-8 pb-10 last:pb-0",
+                  "animate-fade-up flex items-center gap-3 px-4 py-3 rounded-lg border border-white/[0.04] bg-white/[0.02] hover:border-[rgba(139,92,246,0.15)] hover:bg-[rgba(139,92,246,0.03)] transition-all",
                   staggerClass(i)
                 )}
               >
-                {/* Timeline dot */}
-                <div className="absolute left-0 top-1.5 size-3.5 rounded-full border-2 border-[rgba(139,92,246,0.5)] bg-black" />
-
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2">
-                  <div>
-                    <p className="font-medium text-white/90">{exp.role}</p>
-                    <p className="text-sm text-[rgba(139,92,246,0.7)]">
-                      {exp.company}
-                    </p>
-                  </div>
-                  <span className="font-mono text-xs text-white/25">
-                    {exp.period}
-                  </span>
-                </div>
-                <p className="text-sm text-white/45 leading-relaxed">
-                  {exp.description}
-                </p>
+                <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.5)] flex-shrink-0" />
+                <p className="text-sm text-white/60">{topic}</p>
               </div>
             ))}
           </div>

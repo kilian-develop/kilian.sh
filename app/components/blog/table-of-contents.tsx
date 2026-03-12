@@ -1,63 +1,101 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "~/lib/utils";
 
-export interface TocHeading {
+interface TocHeading {
   id: string;
   text: string;
 }
 
-/**
- * Extract h2 headings from raw markdown content.
- * Generates IDs matching rehype-slug output.
- */
-export function extractHeadings(content: string): TocHeading[] {
-  const regex = /^#{2}\s+(.+)$/gm;
-  const headings: TocHeading[] = [];
-  let match: RegExpExecArray | null;
-
-  while ((match = regex.exec(content)) !== null) {
-    const text = match[1].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^\w\s가-힣-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-    headings.push({ id, text });
-  }
-
-  return headings;
-}
-
 export function TableOfContents({ content }: { content: string }) {
-  const headings = useMemo(() => extractHeadings(content), [content]);
+  const [headings, setHeadings] = useState<TocHeading[]>([]);
   const [activeId, setActiveId] = useState<string>("");
+  const headingsFound = useRef(false);
 
+  // Read headings from rendered DOM — retry with MutationObserver if needed
+  useEffect(() => {
+    headingsFound.current = false;
+
+    function readHeadings(): boolean {
+      const prose = document.querySelector(".prose-blog");
+      if (!prose) return false;
+
+      const h2s = prose.querySelectorAll("h2[id]");
+      if (h2s.length === 0) return false;
+
+      const items: TocHeading[] = Array.from(h2s).map((el) => ({
+        id: el.id,
+        text: el.textContent?.trim() || "",
+      }));
+      setHeadings(items);
+      headingsFound.current = true;
+
+      // Set initial active to first heading
+      if (items.length > 0 && !activeId) {
+        setActiveId(items[0].id);
+      }
+      return true;
+    }
+
+    // Try immediately
+    if (readHeadings()) return;
+
+    // If not found yet, use MutationObserver to wait for MDX to render
+    const observer = new MutationObserver(() => {
+      if (headingsFound.current) {
+        observer.disconnect();
+        return;
+      }
+      if (readHeadings()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Safety timeout: stop observing after 5s
+    const timer = setTimeout(() => observer.disconnect(), 5000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, [content]);
+
+  // Scroll-based active heading tracking
   useEffect(() => {
     if (headings.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
+    const headingEls = headings
+      .map(({ id }) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headingEls.length === 0) return;
+
+    function onScroll() {
+      const scrollY = window.scrollY;
+      const offset = 100; // header height offset
+
+      // Find the last heading that has scrolled past the offset
+      let current = headingEls[0]?.id || "";
+      for (const el of headingEls) {
+        if (el.getBoundingClientRect().top <= offset) {
+          current = el.id;
+        } else {
+          break;
         }
-      },
-      {
-        rootMargin: "-80px 0px -70% 0px",
-        threshold: 0,
       }
-    );
+      setActiveId(current);
+    }
 
-    headings.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+    // Set initial state
+    onScroll();
 
-    return () => observer.disconnect();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [headings]);
-
-  if (headings.length === 0) return null;
 
   return (
     <nav className="toc-sidebar hidden xl:block">
@@ -65,23 +103,25 @@ export function TableOfContents({ content }: { content: string }) {
         <p className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-[rgba(139,92,246,0.5)] mb-4">
           목차
         </p>
-        <ul className="space-y-2 border-l border-white/[0.06]">
-          {headings.map(({ id, text }) => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                className={cn(
-                  "block pl-4 py-0.5 text-[0.8125rem] leading-snug transition-all duration-200 border-l-2 -ml-px",
-                  activeId === id
-                    ? "border-[rgba(139,92,246,0.8)] text-white/90 font-medium"
-                    : "border-transparent text-white/30 hover:text-white/60 hover:border-white/[0.1]"
-                )}
-              >
-                {text}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {headings.length > 0 && (
+          <ul className="space-y-2 border-l border-white/[0.06]">
+            {headings.map(({ id, text }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className={cn(
+                    "toc-link block pl-4 py-0.5 text-[0.8125rem] leading-snug transition-all duration-200 border-l-2 -ml-px",
+                    activeId === id
+                      ? "active border-[#a78bfa] font-medium"
+                      : "border-transparent"
+                  )}
+                >
+                  {text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </nav>
   );

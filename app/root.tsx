@@ -11,11 +11,13 @@ import {
 import NProgress from "nprogress";
 
 import { Toaster } from "sonner";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Route } from "./+types/root";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Header } from "~/components/layout/header";
 import { Footer } from "~/components/layout/footer";
-import { Analytics } from "~/components/analytics";
+import { Analytics as GAAnalytics } from "~/components/analytics";
 import { siteConfig } from "~/data/site";
 import "./app.css";
 
@@ -59,9 +61,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <Analytics />
+        <GAAnalytics />
       </head>
       <body className="">
+        <VercelAnalytics />
+        <SpeedInsights />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <div className="ambient-bg" aria-hidden="true" />
         <div className="particles" aria-hidden="true">

@@ -1,0 +1,666 @@
+---
+title: "도메인 중심 설계로 인프라에 독립적인 비즈니스 로직 설계"
+date: "2025-10-19"
+tags: ["Architecture", "DDD", "Clean Architecture", "Multi-Module"]
+excerpt: "도메인 중심 설계를 통해 인프라 변경에 영향받지 않는 비즈니스 로직을 만드는 방법입니다."
+---
+
+# 하위 레이어에 의존적인 아키텍처
+
+아래는 서비스를 개발하다 보면 흔히 볼 수 있는 소프트웨어 아키텍처의 구조입니다.
+
+{/* ── 레이어드 아키텍처 다이어그램 ── */}
+<div style={{
+  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0',
+  padding: '2rem 1rem', margin: '2rem 0',
+  background: 'rgba(139, 92, 246, 0.03)', borderRadius: '12px',
+  border: '1px solid rgba(139, 92, 246, 0.08)'
+}}>
+  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(139, 92, 246, 0.5)', marginBottom: '1.5rem' }}>
+    Layered Architecture
+  </p>
+  {[
+    { label: 'Presentation', sub: 'Controller, DTO', color: '96, 165, 250' },
+    { label: 'Service', sub: 'Business Logic', color: '139, 92, 246' },
+    { label: 'Persistence', sub: 'Repository', color: '167, 139, 250' },
+    { label: 'Domain', sub: '@Entity (JPA)', color: '244, 114, 182' },
+  ].map((layer, i) => (
+    <div key={layer.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '360px' }}>
+      {i > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '4px 0' }}>
+          <div style={{ width: '2px', height: '16px', background: `rgba(${layer.color}, 0.3)` }} />
+          <div style={{ width: '0', height: '0', borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderTop: `8px solid rgba(${layer.color}, 0.4)` }} />
+        </div>
+      )}
+      <div style={{
+        width: '100%', padding: '14px 20px',
+        background: `rgba(${layer.color}, 0.06)`,
+        border: `1px solid rgba(${layer.color}, 0.15)`,
+        borderRadius: '8px', textAlign: 'center',
+      }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: `rgba(${layer.color}, 0.9)` }}>{layer.label}</span>
+        <span style={{ display: 'block', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', marginTop: '2px' }}>{layer.sub}</span>
+      </div>
+    </div>
+  ))}
+  <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', marginTop: '1.5rem', textAlign: 'center' }}>
+    Service가 JPA Entity에 직접 의존 — DB 변경 시 비즈니스 로직도 함께 변경됨
+  </p>
+</div>
+
+많은 블로그의 포스트들이나 문서들이 아래와 같이 설명하고 있습니다.
+
+**레이어드 아키텍처란?**
+- 소프트웨어를 **여러 개의 계층으로 분리해서 설계**하는 방법
+- 각각 계층이 서로 **독립적으로 구성되어 있어서** 한 계층의 변경이 다른 계층에 영향을 주지 않게 설계할 수 있다.
+- 외부의 요구사항이나 세부적인 **구현이 변화하더라도 도메인의 로직을 변경하지 않도록 보호**하기 위해서 계층화를 하게 된다.
+
+하지만 우리가 개발하는 대부분의 코드는 아래와 같습니다.
+
+```java
+@Entity
+@Getter
+@Setter
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String orderNumber;
+    private BigDecimal totalAmount;
+    private LocalDateTime createdAt;
+
+    public Order(String orderNumber, BigDecimal totalAmount) {
+        this.orderNumber = orderNumber;
+        this.totalAmount = totalAmount;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Order() {}
+}
+```
+
+```java
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
+}
+```
+
+```java
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final OrderRepository orderRepository;
+
+    public OrderResponse createOrder(String orderNumber, BigDecimal totalAmount) {
+        Order order = new Order(orderNumber, totalAmount);
+        Order savedOrder = orderRepository.save(order);
+        return new OrderResponse(savedOrder);
+    }
+}
+```
+
+```java
+@RestController
+@RequestMapping("/api/orders")
+@RequiredArgsConstructor
+public class OrderController {
+    private final OrderService orderService;
+
+    @PostMapping
+    public OrderResponse createOrder(@RequestParam String orderNumber,
+                                     @RequestParam BigDecimal totalAmount) {
+        return orderService.createOrder(orderNumber, totalAmount);
+    }
+}
+```
+
+## 진짜 문제는 "의존성"
+
+위 코드를 보시면 **여러 계층으로 분리**되어 있고, **각각이 독립적**이며, **구현이 변해도 도메인은 안전**해 보입니다.
+
+하지만 여기에 함정이 숨어있습니다. 제가 코드를 분석하다가 발견한 문제가 세 가지 있었습니다:
+
+1. **ServiceLayer가 JPA 엔티티에 의존** - Order는 이미 JPA 애노테이션과 강하게 결합됨
+2. **ServiceLayer가 DTO에 의존** - OrderResponse는 REST API 응답 형식으로 강하게 결합됨
+3. **ServiceLayer가 구현체에 의존** - JpaRepository를 상속한 OrderRepository에만 작동함
+
+문제는 단순히 "계층을 분리했다"는 것만으로는 부족했습니다. **"누가 누구에게 의존하고 있는가"**가 훨씬 더 중요합니다.
+
+## 문제 1: 데이터베이스가 바뀌면 비즈니스 로직도 깨진다
+
+제가 처음 마주친 질문은 이거였습니다:
+
+> **데이터베이스를 MongoDB로 바꾼다면 어떻게 해야 할까?**
+
+Order는 JPA 엔티티입니다. `@Entity`, `@Table`, `@Id` 같은 애노테이션들이 가득합니다. 이건 **RDB에 매우 강하게 결합**된 설계입니다.
+
+MongoDB로 전환한다면? JPA 애노테이션들을 모두 제거하고 Spring Data MongoDB의 애노테이션으로 바꿔야 합니다. **엔티티 구조 자체를 재설계**해야 할 수도 있습니다.
+
+그런데 여기서 발견한 더 큰 문제가 있었습니다. Order 엔티티에는 단순한 데이터만 아니라 **주문 생성 로직, 금액 계산 로직 같은 비즈니스 로직들이 섞여**있었습니다.
+
+## 문제 2: 인터페이스가 변하면 서비스도 함께 변한다
+
+> **REST API 대신 Kafka 메시지 기반으로 변경해야 한다면?**
+
+OrderService는 `OrderResponse` DTO를 반환합니다. 이 DTO는 **REST API 응답 형식에 맞춰 설계**된 것입니다.
+
+만약 동일한 비즈니스 로직을 Kafka 메시지 기반으로 노출해야 한다면? Service는 더 이상 OrderResponse를 반환하는 게 아니라 OrderEvent 같은 객체를 반환해야 합니다. **Service가 통신 방식의 변경에 영향을 받게 됩니다.**
+
+## 근본 원인: "계층의 분리"가 아니라 "의존성의 방향"
+
+이 두 가지 문제를 분석하다 보니 패턴이 보였습니다:
+
+**상위 계층(Service)이 하위 계층(Persistence, Presentation)에 의존하고 있다**는 것이었습니다.
+
+계층을 분리하는 것만으로는 부족합니다. **의존성의 방향을 뒤집어야 합니다.**
+
+# 해결책: 의존성을 역전시키자
+
+문제의 핵심은 명확했습니다:
+
+> **하위 계층(Infrastructure)이 Service를 지배하지 말고, Service가 자신이 필요로 하는 인터페이스를 정의하도록 해야 한다.**
+
+이를 위해 저는 **JPA 엔티티와 도메인 객체를 완전히 분리**하는 방식을 선택했습니다.
+
+주요 개선 사항은:
+
+1. **데이터베이스 변경으로부터 자유로워진다** — Infrastructure 계층만 교체하면 됨
+2. **비즈니스 로직이 비즈니스 규칙으로 설계된다** — 역할과 책임 중심으로 설계 가능
+3. **도메인이 진정한 불변 객체가 될 수 있다** — `final` 키워드 사용, CQS 원칙 준수
+
+## 1단계: 도메인과 인프라를 분리
+
+### Before: 단순한 분리 시도
+
+```java
+@Entity
+@Getter
+@Setter
+public class Order {  // JPA와 비즈니스 로직이 섞여있음
+    @Id
+    private Long id;
+    private String orderNumber;
+    private BigDecimal totalAmount;
+}
+
+@Service
+public class OrderService {
+    private final OrderRepository orderRepository;
+
+    public Order createOrder(String orderNumber, BigDecimal totalAmount) {
+        Order order = new Order(orderNumber, totalAmount);
+        return orderRepository.save(order);
+    }
+}
+```
+
+**데이터베이스가 MariaDB에서 MongoDB로 바뀌는 순간, 비즈니스 로직도 함께 변해야 합니다.**
+
+### After: 계층을 명확하게 분리
+
+도메인 객체:
+
+```java
+public class Order {
+    private final Long id;
+    private final String orderNumber;
+    private final BigDecimal totalAmount;
+    private final LocalDateTime createdAt;
+
+    public Order(String orderNumber, BigDecimal totalAmount) {
+        this.orderNumber = orderNumber;
+        this.totalAmount = totalAmount;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public String getOrderNumber() { return orderNumber; }
+    public BigDecimal getTotalAmount() { return totalAmount; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+}
+```
+
+JPA 엔티티는 순수하게 ORM 매핑만 담당합니다:
+
+```java
+@Entity
+@Getter
+@Setter
+public class OrderEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String orderNumber;
+    private BigDecimal totalAmount;
+    private LocalDateTime createdAt;
+}
+```
+
+리포지토리 인터페이스를 정의하여 도메인에 의존하도록 합니다:
+
+```java
+public interface OrderRepository {
+    Order save(Order order);
+    Order findById(Long id);
+}
+```
+
+JPA 구현체는 도메인과 JPA 엔티티 사이의 매핑을 담당합니다:
+
+```java
+@Repository
+public class OrderRepositoryImpl implements OrderRepository {
+    private final OrderJpaRepository jpaRepository;
+
+    @Override
+    public Order save(Order order) {
+        OrderEntity entity = new OrderEntity();
+        entity.setOrderNumber(order.getOrderNumber());
+        entity.setTotalAmount(order.getTotalAmount());
+        entity.setCreatedAt(order.getCreatedAt());
+
+        OrderEntity saved = jpaRepository.save(entity);
+        return new Order(saved.getOrderNumber(), saved.getTotalAmount());
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return jpaRepository.findById(id)
+            .map(entity -> new Order(entity.getOrderNumber(), entity.getTotalAmount()))
+            .orElseThrow();
+    }
+}
+```
+
+이제 **MongoDB로 변경해야 한다면?**
+
+```java
+@Repository
+public class OrderMongoRepository implements OrderRepository {
+    private final OrderMongoDao mongoDao;
+
+    @Override
+    public Order save(Order order) {
+        OrderDocument doc = new OrderDocument();
+        doc.setOrderNumber(order.getOrderNumber());
+        doc.setTotalAmount(order.getTotalAmount());
+        mongoDao.save(doc);
+        return order;
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return mongoDao.findById(id)
+            .map(doc -> new Order(doc.getOrderNumber(), doc.getTotalAmount()))
+            .orElseThrow();
+    }
+}
+```
+
+**결과는 이렇습니다:**
+- **OrderService는 건드리지 않음**
+- **도메인 Order도 변경하지 않음**
+- **구현체만 MongoDB 버전으로 교체**
+
+## 2단계: 역할과 책임으로 설계
+
+### 데이터 중심 vs 책임 중심의 차이
+
+**JPA 엔티티는 데이터 중심일 수밖에 없습니다.** RDB의 테이블 구조를 반영하니까요.
+
+하지만 **도메인 객체는 역할과 책임으로 설계할 수 있습니다.** 데이터 구조에 얽매일 필요가 없거든요.
+
+### Before: 데이터 중심으로 설계하면
+
+```java
+@Entity
+@Getter
+public class DiscountPolicy {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long orderId;
+    private BigDecimal fixedDiscountAmount;    // 정액할인
+    private BigDecimal percentageDiscount;      // 정률할인
+    private String couponCode;                  // 쿠폰할인
+    private boolean isCouponExpired;
+    private BigDecimal couponDiscountAmount;
+    private String discountType;  // "FIXED", "PERCENTAGE", "COUPON"
+    private LocalDateTime createdAt;
+}
+```
+
+이 방식의 문제는 명확합니다:
+- 모든 방식의 필드를 **한 엔티티에 때려 박아야 함**
+- 실제로 필요 없는 필드들도 **null로 채워짐**
+- 새로운 할인 정책이 나올 때마다 **엔티티에 새 필드를 추가**해야 함
+
+### After: 책임 중심으로 설계하면
+
+할인의 책임을 인터페이스로 정의합니다:
+
+```java
+public interface DiscountPolicy {
+    boolean isValid();
+    BigDecimal calculateDiscount(BigDecimal originalAmount);
+}
+```
+
+각 할인 정책이 자신의 책임에만 충실합니다:
+
+```java
+public class FixedAmountDiscount extends AbstractDiscountPolicy {
+    private final BigDecimal discountAmount;
+
+    @Override
+    public boolean isValid() {
+        return discountAmount != null && discountAmount.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    @Override
+    public BigDecimal calculateDiscount(BigDecimal originalAmount) {
+        if (!isValid()) {
+            throw new InvalidDiscountException("정액할인 금액이 유효하지 않습니다");
+        }
+        return discountAmount.min(originalAmount);
+    }
+}
+
+public class PercentageDiscount extends AbstractDiscountPolicy {
+    private final BigDecimal percentage;
+
+    @Override
+    public boolean isValid() {
+        return percentage != null
+            && percentage.compareTo(BigDecimal.ZERO) > 0
+            && percentage.compareTo(BigDecimal.valueOf(100)) < 0;
+    }
+
+    @Override
+    public BigDecimal calculateDiscount(BigDecimal originalAmount) {
+        if (!isValid()) {
+            throw new InvalidDiscountException("할인율이 유효하지 않습니다");
+        }
+        return originalAmount.multiply(percentage).divide(BigDecimal.valueOf(100));
+    }
+}
+
+public class CouponDiscount extends AbstractDiscountPolicy {
+    private final String couponCode;
+    private final BigDecimal discountAmount;
+    private final boolean isExpired;
+
+    @Override
+    public boolean isValid() {
+        return !isExpired && discountAmount.compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    @Override
+    public BigDecimal calculateDiscount(BigDecimal originalAmount) {
+        if (!isValid()) {
+            throw new InvalidDiscountException("쿠폰이 유효하지 않습니다");
+        }
+        return discountAmount.min(originalAmount);
+    }
+}
+```
+
+### 비교 표로 보는 차이
+
+| 측면 | Before (데이터 중심) | After (책임 중심) |
+|---|---|---|
+| **필드** | 모든 할인 방식 필드 포함 | 각 정책별 필요한 필드만 |
+| **Null 처리** | 미사용 필드는 null로 채움 | 항상 의미 있는 값만 |
+| **확장성** | 정책 추가 시 엔티티 수정 필요 | 새 클래스만 추가 (OCP) |
+| **테스트** | 많은 필드를 세팅해야 함 | 필요한 것만 간단히 세팅 |
+
+## 3단계: 불변 객체로 설계해서 명확하게
+
+### JPA 엔티티의 제약사항
+
+**JPA 엔티티는 `final` 키워드를 사용할 수 없습니다.** Hibernate가 프록시 객체를 만들기 위해 서브클래싱을 필요로 하기 때문입니다.
+
+```java
+@Entity
+public class Order {
+    private BigDecimal totalAmount;
+
+    // 이 메서드가 상태를 변경하는지 명확하지 않음
+    public void applyDiscount(BigDecimal discountPercent) {
+        totalAmount = totalAmount.multiply(BigDecimal.ONE.subtract(discountPercent));
+    }
+
+    // 조회인 줄 알았는데 상태도 변경?
+    public boolean discountApply(BigDecimal discountPercent) {
+        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            return false;  // 조회인가?
+        }
+        totalAmount = totalAmount.multiply(
+            BigDecimal.ONE.subtract(discountPercent)
+        );  // 명령?
+        return true;
+    }
+}
+```
+
+이를 **CQS 원칙 위반**이라 합니다. (Command-Query Separation)
+
+### 도메인 객체는 불변으로 설계
+
+도메인 객체는 다릅니다. **`final` 키워드를 사용해서 불변으로 만들 수 있습니다:**
+
+```java
+public class Order {
+    private final Long id;
+    private final String orderNumber;
+    private final BigDecimal totalAmount;
+    private final int quantity;
+    private final LocalDateTime createdAt;
+
+    // 조회(Query) - 상태 변경 없음
+    public boolean canApplyDiscount(BigDecimal discountPercent) {
+        return totalAmount.compareTo(BigDecimal.ZERO) > 0
+            && discountPercent.compareTo(BigDecimal.ZERO) > 0
+            && discountPercent.compareTo(BigDecimal.ONE) < 0;
+    }
+
+    // 명령(Command) - 새로운 Order 객체 반환
+    public Order applyDiscount(BigDecimal discountPercent) {
+        if (!canApplyDiscount(discountPercent)) {
+            throw new InvalidDiscountException("할인 불가");
+        }
+        BigDecimal discountedAmount = totalAmount.multiply(
+            BigDecimal.ONE.subtract(discountPercent)
+        );
+        return new Order(this.id, this.orderNumber, discountedAmount, this.quantity);
+    }
+}
+```
+
+이제 명확합니다:
+- **조회(`canApplyDiscount`)** — boolean 반환, 상태 변경 없음
+- **명령(`applyDiscount`)** — 새로운 Order 객체 반환, 원본은 건드리지 않음
+
+`final` 키워드는 단순한 제약이 아니라, **아키텍처적 명확성**을 강제하는 도구입니다.
+
+# 멀티모듈: 아키텍처를 코드로 강제
+
+지금까지는 **개념과 패턴**으로 의존성을 관리했습니다. 하지만 **사람은 실수**합니다.
+
+더 강력한 방법이 있습니다: **멀티모듈 구조**. 이 방식을 사용하면, **컴파일 타임에 아키텍처 의존성이 자동으로 강제**됩니다.
+
+## 모듈 구조
+
+```
+order-service/
+├── order-domain          (비즈니스 로직)
+├── order-service         (Use Case)
+├── order-mariadb         (데이터 접근)
+└── order-application     (API 엔드포인트)
+```
+
+각 모듈의 의존성은 이렇게 설정합니다:
+
+```gradle
+// order-domain (맨 아래 - 외부 의존성 없음)
+dependencies {
+    // 프레임워크 의존성 없음
+}
+
+// order-service (중간)
+dependencies {
+    implementation project(':order-domain')
+    runtimeOnly project(':order-mariadb')  // ← 핵심!
+}
+
+// order-mariadb (인프라)
+dependencies {
+    implementation project(':order-domain')
+}
+
+// order-application (맨 위)
+dependencies {
+    implementation project(':order-service')
+}
+```
+
+## runtimeOnly의 마법
+
+`runtimeOnly`로 설정하면:
+- **컴파일 타임**: order-mariadb의 클래스를 import할 수 없음 (IDE가 빨간 줄)
+- **런타임**: Spring이 자동으로 구현체를 찾아 주입함
+
+{/* ── 멀티모듈 의존성 다이어그램 ── */}
+<div style={{
+  padding: '2rem 1rem', margin: '2rem 0',
+  background: 'rgba(139, 92, 246, 0.03)', borderRadius: '12px',
+  border: '1px solid rgba(139, 92, 246, 0.08)'
+}}>
+  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'rgba(139, 92, 246, 0.5)', marginBottom: '1.5rem', textAlign: 'center' }}>
+    Multi-Module Dependency Structure
+  </p>
+
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', maxWidth: '480px', margin: '0 auto' }}>
+    {/* Application Layer */}
+    <div style={{
+      width: '100%', padding: '14px 20px', textAlign: 'center',
+      background: 'rgba(96, 165, 250, 0.08)', border: '1px solid rgba(96, 165, 250, 0.2)',
+      borderRadius: '8px',
+    }}>
+      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(96, 165, 250, 0.9)' }}>order-application</span>
+      <span style={{ display: 'block', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>Controller, DTO</span>
+    </div>
+
+    {/* Arrow down */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '2px 0' }}>
+      <div style={{ width: '2px', height: '14px', background: 'rgba(96, 165, 250, 0.3)' }} />
+      <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '7px solid rgba(96, 165, 250, 0.4)' }} />
+      <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>implementation</span>
+    </div>
+
+    {/* Service Layer */}
+    <div style={{
+      width: '100%', padding: '14px 20px', textAlign: 'center',
+      background: 'rgba(139, 92, 246, 0.08)', border: '1px solid rgba(139, 92, 246, 0.2)',
+      borderRadius: '8px',
+    }}>
+      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(139, 92, 246, 0.9)' }}>order-service</span>
+      <span style={{ display: 'block', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>Use Case, Business Logic</span>
+    </div>
+
+    {/* Two arrows: down to domain, dashed to mariadb */}
+    <div style={{ display: 'flex', width: '100%', justifyContent: 'center', gap: '3rem', marginTop: '4px' }}>
+      {/* Left: implementation to domain */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ width: '2px', height: '14px', background: 'rgba(94, 234, 212, 0.3)' }} />
+        <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '7px solid rgba(94, 234, 212, 0.4)' }} />
+        <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)', marginTop: '2px' }}>implementation</span>
+      </div>
+
+      {/* Right: runtimeOnly to mariadb */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ width: '2px', height: '14px', background: 'rgba(244, 114, 182, 0.3)', backgroundImage: 'repeating-linear-gradient(to bottom, rgba(244,114,182,0.3) 0px, rgba(244,114,182,0.3) 3px, transparent 3px, transparent 6px)' }} />
+        <div style={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '7px solid rgba(244, 114, 182, 0.4)' }} />
+        <span style={{ fontSize: '0.55rem', color: 'rgba(244, 114, 182, 0.5)', marginTop: '2px', fontWeight: 600 }}>runtimeOnly</span>
+      </div>
+    </div>
+
+    {/* Domain + MariaDB side by side */}
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', width: '100%', marginTop: '4px' }}>
+      <div style={{
+        padding: '14px 16px', textAlign: 'center',
+        background: 'rgba(94, 234, 212, 0.06)', border: '1px solid rgba(94, 234, 212, 0.15)',
+        borderRadius: '8px',
+      }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(94, 234, 212, 0.9)' }}>order-domain</span>
+        <span style={{ display: 'block', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>Entity, Interface</span>
+        <span style={{ display: 'block', fontSize: '0.55rem', color: 'rgba(94, 234, 212, 0.4)', marginTop: '4px' }}>No framework deps</span>
+      </div>
+      <div style={{
+        padding: '14px 16px', textAlign: 'center',
+        background: 'rgba(244, 114, 182, 0.06)', border: '1px solid rgba(244, 114, 182, 0.15)',
+        borderRadius: '8px',
+      }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgba(244, 114, 182, 0.9)' }}>order-mariadb</span>
+        <span style={{ display: 'block', fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginTop: '2px' }}>JPA Entity, Impl</span>
+        <span style={{ display: 'block', fontSize: '0.55rem', color: 'rgba(244, 114, 182, 0.4)', marginTop: '4px' }}>impl: order-domain</span>
+      </div>
+    </div>
+
+    {/* mariadb → domain arrow */}
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '6px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.2)' }}>order-mariadb</span>
+        <div style={{ width: '30px', height: '2px', background: 'rgba(167, 139, 250, 0.3)' }} />
+        <div style={{ width: 0, height: 0, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderRight: '6px solid rgba(167, 139, 250, 0.4)', transform: 'rotate(180deg)' }} />
+        <span style={{ fontSize: '0.55rem', color: 'rgba(255,255,255,0.2)' }}>order-domain</span>
+      </div>
+    </div>
+  </div>
+
+  <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', marginTop: '1.5rem', textAlign: 'center' }}>
+    runtimeOnly로 컴파일 타임에 구현체 접근을 차단 — 아키텍처가 코드로 강제됨
+  </p>
+</div>
+
+## 강제되는 아키텍처
+
+누군가 구현체에 직접 의존하려고 시도합니다:
+
+```java
+// 컴파일 에러 발생!
+@Service
+public class OrderService {
+    private final OrderRepositoryImpl impl;  // 빨간 줄!
+
+    public OrderService(OrderRepositoryImpl impl) {
+        this.impl = impl;
+    }
+}
+```
+
+**IDE가 즉시 빨간 줄을 그어줍니다.** OrderRepositoryImpl은 import할 수 없으니까요.
+
+개발자는 **어쩔 수 없이** 인터페이스로 변경할 수밖에 없습니다:
+
+```java
+// 컴파일 성공
+@Service
+public class OrderService {
+    private final OrderRepository repository;  // 인터페이스만 가능
+
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
+}
+```
+
+이게 바로 **멀티모듈의 강력함**입니다. 팀 규칙에 의존하지 않고, **아키텍처를 코드 레벨에서 강제**할 수 있습니다.
+
+**변경 범위를 정리하면:**
+- 도메인 (Order, DiscountPolicy) — **변경 없음**
+- Service — **변경 없음**
+- Repository 구현체 — 수정 (매핑 로직만)
+- DB 스키마 — 변경 (테이블 분리)

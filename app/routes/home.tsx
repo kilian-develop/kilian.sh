@@ -17,9 +17,9 @@ export async function loader(_: Route.LoaderArgs) {
 
 export function meta(_: Route.MetaArgs) {
   return [
-    { title: `${siteConfig.title} — 개발자의 기록` },
+    { title: `${siteConfig.title} — 한 줄의 코드, 한 걸음의 성장` },
     { name: "description", content: siteConfig.description },
-    { property: "og:title", content: `${siteConfig.title} — 개발자의 기록` },
+    { property: "og:title", content: `${siteConfig.title} — 한 줄의 코드, 한 걸음의 성장` },
     { property: "og:description", content: siteConfig.description },
     { property: "og:type", content: "website" },
     { tagName: "link", rel: "canonical", href: siteConfig.url },
@@ -172,13 +172,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             className="animate-fade-up stagger-2 aurora-text font-heading font-semibold leading-[1.1] mt-6 mb-6"
             style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
           >
-            개발자의 기록
+            한 줄의 코드, 한 걸음의 성장
           </h1>
 
           <p className="animate-fade-up stagger-3 text-white/45 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10">
-            코드 너머의 고민과 성장을 기록합니다.
+            매일 조금씩, 더 나은 구조를 고민합니다.
             <br className="hidden sm:block" />
-            매일의 작은 발견이 모여 깊은 이해가 됩니다.
+            그 과정을 솔직하게 풀어놓는 곳입니다.
           </p>
 
           <div className="animate-fade-up stagger-4">
@@ -280,12 +280,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
                 <div>
                   <p className="text-white/55 leading-relaxed mb-3">
-                    백엔드 개발자로 일하면서 "왜 이렇게 설계해야 하는가"를 꾸준히
-                    고민합니다.
+                    Java와 Spring Framework를 중심으로 백엔드 서비스를 개발하고
+                    있습니다.
                   </p>
                   <p className="text-white/55 leading-relaxed mb-6">
-                    클린 아키텍처, DDD, 테스트 가능한 코드에 관심이 많고, 그
-                    과정에서 겪은 시행착오를 이 블로그에 담습니다.
+                    확장 가능하고 유지보수하기 쉬운 코드를 지향하며, 그 과정에서
+                    겪은 고민과 시행착오를 이 블로그에 담습니다.
                   </p>
 
                   <div className="flex flex-wrap gap-2 mb-8">

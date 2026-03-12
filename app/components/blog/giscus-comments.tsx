@@ -19,10 +19,10 @@ export function GiscusComments({ slug }: GiscusCommentsProps) {
 
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";
-    script.setAttribute("data-repo", "OWNER/REPO"); // TODO: 실제 GitHub 레포로 변경
-    script.setAttribute("data-repo-id", ""); // TODO: giscus.app에서 확인
-    script.setAttribute("data-category", "Comments");
-    script.setAttribute("data-category-id", ""); // TODO: giscus.app에서 확인
+    script.setAttribute("data-repo", "kilian-develop/kilian.sh");
+    script.setAttribute("data-repo-id", "R_kgDORk-6Gg");
+    script.setAttribute("data-category", "General");
+    script.setAttribute("data-category-id", "DIC_kwDORk-6Gs4C4N0s");
     script.setAttribute("data-mapping", "pathname");
     script.setAttribute("data-strict", "0");
     script.setAttribute("data-reactions-enabled", "1");

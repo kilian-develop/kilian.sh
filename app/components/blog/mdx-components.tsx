@@ -24,9 +24,11 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
       // Shiki output: <pre class="shiki ..."><code>...</code></pre>
       // Extract language from the code element's data-language attribute
       const codeEl = React.isValidElement(children) ? children : null;
+      const codeProps = codeEl?.props as any;
       const lang =
-        (codeEl?.props as any)?.["data-language"] ||
-        (codeEl?.props as any)?.className?.match(/language-(\w+)/)?.[1] ||
+        codeProps?.dataLanguage ||
+        codeProps?.["data-language"] ||
+        codeProps?.className?.match(/language-(\w+)/)?.[1] ||
         "";
       const rawText = extractTextContent(children);
 

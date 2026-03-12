@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from "@mdx-js/rollup";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeShiki from "@shikijs/rehype";
@@ -12,7 +13,18 @@ import {
   transformerNotationHighlight,
   transformerNotationFocus,
 } from "@shikijs/transformers";
+import type { ShikiTransformer } from "shiki";
 import { defineConfig } from "vite";
+
+/** Shiki transformer: inject data-language on <code> element */
+function transformerLanguageAttr(): ShikiTransformer {
+  return {
+    name: "add-language-attr",
+    code(node) {
+      node.properties.dataLanguage = this.options.lang;
+    },
+  };
+}
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
@@ -21,7 +33,7 @@ export default defineConfig({
       enforce: "pre",
       ...mdx({
         providerImportSource: "@mdx-js/react",
-        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+        remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
         rehypePlugins: [
           rehypeSlug,
           rehypeAutolinkHeadings,
@@ -34,6 +46,7 @@ export default defineConfig({
               },
               defaultColor: false,
               transformers: [
+                transformerLanguageAttr(),
                 transformerMetaHighlight(),
                 transformerNotationDiff(),
                 transformerNotationHighlight(),
