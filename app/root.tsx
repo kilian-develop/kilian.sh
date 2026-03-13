@@ -40,6 +40,7 @@ export const links: Route.LinksFunction = () => [
 export const meta: Route.MetaFunction = () => [
   { title: siteConfig.title },
   { name: "description", content: siteConfig.description },
+  { name: "google-site-verification", content: "Bs5x6c61IYUL6tyi63aCm8Vs1xOlt8B8et8tdn1qJP0" },
   { property: "og:site_name", content: siteConfig.title },
   { property: "og:locale", content: "ko_KR" },
   { name: "twitter:card", content: "summary" },

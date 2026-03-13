@@ -59,15 +59,26 @@ export function meta({ data }: Route.MetaArgs) {
     keywords: data.post.tags,
   };
 
+  const ogImage = data.post.thumbnail
+    ? `${siteConfig.url}${data.post.thumbnail}`
+    : undefined;
+
   return [
     { title: `${data.post.title} | kilian.sh` },
     { name: "description", content: data.post.excerpt },
     { property: "og:title", content: data.post.title },
     { property: "og:description", content: data.post.excerpt },
     { property: "og:type", content: "article" },
+    { property: "og:url", content: postUrl },
+    ...(ogImage
+      ? [
+          { property: "og:image", content: ogImage },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: ogImage },
+        ]
+      : [{ name: "twitter:card", content: "summary" }]),
     { property: "article:published_time", content: data.post.date },
     { property: "article:author", content: siteConfig.name },
-    { name: "twitter:card", content: "summary" },
     { name: "twitter:title", content: data.post.title },
     { name: "twitter:description", content: data.post.excerpt },
     { tagName: "link", rel: "canonical", href: postUrl },
