@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { giscusConfig } from "~/data/site";
 
 interface GiscusCommentsProps {
   slug: string;
@@ -6,7 +7,7 @@ interface GiscusCommentsProps {
 
 /**
  * Giscus comment widget.
- * Configure at https://giscus.app — replace repo/repoId/category/categoryId below.
+ * Configuration is centralized in data/site.ts.
  */
 export function GiscusComments({ slug }: GiscusCommentsProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -14,23 +15,22 @@ export function GiscusComments({ slug }: GiscusCommentsProps) {
   useEffect(() => {
     if (!ref.current) return;
 
-    // Clear previous instance on slug change
     ref.current.innerHTML = "";
 
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";
-    script.setAttribute("data-repo", "kilian-develop/kilian.sh");
-    script.setAttribute("data-repo-id", "R_kgDORk-6Gg");
-    script.setAttribute("data-category", "General");
-    script.setAttribute("data-category-id", "DIC_kwDORk-6Gs4C4N0s");
-    script.setAttribute("data-mapping", "pathname");
-    script.setAttribute("data-strict", "0");
-    script.setAttribute("data-reactions-enabled", "1");
-    script.setAttribute("data-emit-metadata", "0");
-    script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", "transparent_dark");
-    script.setAttribute("data-lang", "ko");
-    script.setAttribute("data-loading", "lazy");
+    script.setAttribute("data-repo", giscusConfig.repo);
+    script.setAttribute("data-repo-id", giscusConfig.repoId);
+    script.setAttribute("data-category", giscusConfig.category);
+    script.setAttribute("data-category-id", giscusConfig.categoryId);
+    script.setAttribute("data-mapping", giscusConfig.mapping);
+    script.setAttribute("data-strict", giscusConfig.strict);
+    script.setAttribute("data-reactions-enabled", giscusConfig.reactionsEnabled);
+    script.setAttribute("data-emit-metadata", giscusConfig.emitMetadata);
+    script.setAttribute("data-input-position", giscusConfig.inputPosition);
+    script.setAttribute("data-theme", giscusConfig.theme);
+    script.setAttribute("data-lang", giscusConfig.lang);
+    script.setAttribute("data-loading", giscusConfig.loading);
     script.crossOrigin = "anonymous";
     script.async = true;
 

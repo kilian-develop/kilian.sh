@@ -19,13 +19,13 @@ export function PostNavigation({ prev, next }: PostNavigationProps) {
       {prev ? (
         <Link
           to={`/blog/${prev.slug}`}
-          className="group flex flex-col gap-2 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] hover:border-[rgba(139,92,246,0.3)] hover:bg-white/[0.04] transition-all duration-200"
+          className="group flex flex-col gap-2 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] hover:border-accent/30 hover:bg-white/[0.04] transition-all duration-200"
         >
           <span className="flex items-center gap-1.5 text-xs font-mono font-medium text-white/30 uppercase tracking-wide">
             <ArrowLeft className="size-3 transition-transform duration-200 group-hover:-translate-x-0.5" />
             이전 글
           </span>
-          <span className="font-heading text-sm leading-snug text-white/75 group-hover:text-[rgba(139,92,246,0.9)] transition-colors line-clamp-2">
+          <span className="font-heading text-sm leading-snug text-white/75 group-hover:text-accent/90 transition-colors line-clamp-2">
             {prev.title}
           </span>
         </Link>
@@ -35,13 +35,13 @@ export function PostNavigation({ prev, next }: PostNavigationProps) {
       {next ? (
         <Link
           to={`/blog/${next.slug}`}
-          className="group flex flex-col items-end gap-2 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] hover:border-[rgba(139,92,246,0.3)] hover:bg-white/[0.04] transition-all duration-200 text-right"
+          className="group flex flex-col items-end gap-2 p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] hover:border-accent/30 hover:bg-white/[0.04] transition-all duration-200 text-right"
         >
           <span className="flex items-center gap-1.5 text-xs font-mono font-medium text-white/30 uppercase tracking-wide">
             다음 글
             <ArrowRight className="size-3 transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>
-          <span className="font-heading text-sm leading-snug text-white/75 group-hover:text-[rgba(139,92,246,0.9)] transition-colors line-clamp-2">
+          <span className="font-heading text-sm leading-snug text-white/75 group-hover:text-accent/90 transition-colors line-clamp-2">
             {next.title}
           </span>
         </Link>

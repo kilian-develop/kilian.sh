@@ -19,8 +19,8 @@ export default function NotFound() {
             404
           </span>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="size-16 rounded-full bg-[rgba(139,92,246,0.08)] border border-[rgba(139,92,246,0.15)] flex items-center justify-center backdrop-blur-sm">
-              <Search className="size-6 text-[rgba(167,139,250,0.6)]" />
+            <div className="size-16 rounded-full bg-accent/[0.08] border border-accent/15 flex items-center justify-center backdrop-blur-sm">
+              <Search className="size-6 text-accent-light/60" />
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(139,92,246,0.25)] bg-[rgba(139,92,246,0.08)] text-[rgba(167,139,250,0.9)] text-sm font-medium transition-all duration-200 hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.4)] hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-accent/25 bg-accent/[0.08] text-accent-light/90 text-sm font-medium transition-all duration-200 hover:bg-accent/15 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]"
           >
             <ArrowLeft className="size-3.5" />
             홈으로 돌아가기

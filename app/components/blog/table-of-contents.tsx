@@ -103,7 +103,7 @@ export function TableOfContents({ content }: { content: string }) {
   return (
     <nav className="toc-sidebar hidden xl:block">
       <div className="sticky top-32 max-h-[calc(100vh-10rem)] overflow-y-auto toc-scroll">
-        <p className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-[rgba(139,92,246,0.5)] mb-4">
+        <p className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-accent/50 mb-4">
           목차
         </p>
         {headings.length > 0 && (

@@ -3,7 +3,7 @@ import { Github, Mail, Linkedin, ArrowRight } from "lucide-react";
 import { siteConfig } from "~/data/site";
 
 const linkClass =
-  "inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.08] text-sm text-white/55 hover:text-white/85 hover:border-[rgba(139,92,246,0.3)] hover:bg-[rgba(139,92,246,0.06)] transition-all";
+  "inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.08] text-sm text-white/55 hover:text-white/85 hover:border-accent/30 hover:bg-accent/[0.06] transition-all";
 
 interface ContactCTAProps {
   title?: string;
@@ -22,10 +22,10 @@ export function ContactCTA({
 }: ContactCTAProps) {
   return (
     <section className="py-16 md:py-24 px-4">
-      <div className={`max-w-[1100px] mx-auto px-4 md:px-8 ${centered ? "text-center" : ""}`}>
+      <div className={`max-w-page mx-auto px-4 md:px-8 ${centered ? "text-center" : ""}`}>
         <div className="animate-fade-up mb-10">
           {!centered && (
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50 block mb-3">
               Contact
             </span>
           )}

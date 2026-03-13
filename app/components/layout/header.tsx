@@ -33,7 +33,7 @@ export function Header() {
           : "border-b border-transparent bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-[1100px] items-center justify-between px-6 md:px-8">
+      <div className="mx-auto flex h-16 max-w-page items-center justify-between px-6 md:px-8">
         {/* Logo */}
         <NavLink
           to="/"
@@ -83,7 +83,7 @@ export function Header() {
           mobileOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0 border-t-transparent"
         )}
       >
-        <div className="mx-auto flex max-w-[1100px] flex-col gap-1 px-6 py-4">
+        <div className="mx-auto flex max-w-page flex-col gap-1 px-6 py-4">
           {navItems.map(({ to, label }) => (
             <NavLink
               key={to}

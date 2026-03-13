@@ -34,9 +34,9 @@ export default function PortfolioIndex() {
     <div className="min-h-screen">
       {/* ===== HERO SECTION ===== */}
       <section className="pt-24 pb-16 md:pt-36 md:pb-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-10">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)]">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50">
               Portfolio
             </span>
           </div>
@@ -54,13 +54,13 @@ export default function PortfolioIndex() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== PROJECTS ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="space-y-6">
             {projects.map((project, i) => (
               <Link
@@ -72,14 +72,14 @@ export default function PortfolioIndex() {
                 )}
               >
                 {/* Gradient border glow on hover */}
-                <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-[rgba(139,92,246,0.15)] via-[rgba(59,130,246,0.1)] to-[rgba(94,234,212,0.08)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-accent/15 via-[rgba(59,130,246,0.1)] to-accent-teal/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 <div className="relative rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] p-6 md:p-8 transition-all duration-300 group-hover:border-white/[0.1] group-hover:bg-white/[0.04] group-active:scale-[0.99]">
                   <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                     <div className="flex-1">
                       {/* Number + Title */}
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="font-mono text-[0.65rem] text-[rgba(139,92,246,0.5)]">
+                        <span className="font-mono text-[0.65rem] text-accent/50">
                           {project.number}
                         </span>
                         <h2 className="font-heading text-xl md:text-2xl font-semibold text-white/90">
@@ -109,7 +109,7 @@ export default function PortfolioIndex() {
                         {project.highlights.map((h) => (
                           <span
                             key={h}
-                            className="text-[0.7rem] font-mono text-[rgba(167,139,250,0.7)]"
+                            className="text-[0.7rem] font-mono text-accent-light/70"
                           >
                             {h}
                           </span>
@@ -119,7 +119,7 @@ export default function PortfolioIndex() {
 
                     {/* Arrow */}
                     <div className="flex-shrink-0 flex items-center self-center">
-                      <ArrowRight className="size-5 text-white/20 group-hover:text-[rgba(139,92,246,0.6)] group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="size-5 text-white/20 group-hover:text-accent/60 group-hover:translate-x-1 transition-all" />
                     </div>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export default function PortfolioIndex() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Balancer } from "react-wrap-balancer";
 import { Link } from "react-router";
 import {
   BookOpen,
@@ -44,21 +45,23 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
     <div className="min-h-screen">
       {/* ===== HEADER ===== */}
       <section className="pt-24 pb-8 md:pt-36 md:pb-12 px-8">
-        <div className="max-w-[1100px] mx-auto">
+        <div className="max-w-page mx-auto">
           <div className="animate-fade-in flex items-center gap-3 mb-8">
-            <div className="h-px w-12 bg-[rgba(139,92,246,0.4)]" />
-            <span className="font-mono text-[0.7rem] uppercase tracking-widest text-[rgba(139,92,246,0.5)]">
+            <div className="h-px w-12 bg-accent/40" />
+            <span className="font-mono text-[0.7rem] uppercase tracking-widest text-accent/50">
               Blog
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
-              <h1 className="animate-fade-up font-heading text-4xl md:text-6xl font-semibold tracking-tight text-balance text-white/90 mb-3">
-                블로그
-                <span className="inline-block ml-2 font-heading text-white/15 text-2xl md:text-4xl select-none">
-                  /archive
-                </span>
+              <h1 className="animate-fade-up font-heading text-4xl md:text-6xl font-semibold tracking-tight text-white/90 mb-3">
+                <Balancer>
+                  블로그
+                  <span className="inline-block ml-2 font-heading text-white/15 text-2xl md:text-4xl select-none">
+                    /archive
+                  </span>
+                </Balancer>
               </h1>
 
               <p className="animate-fade-up stagger-2 text-white/45 text-lg">
@@ -71,7 +74,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                   <span className="text-white/30">
                     {" "}
                     in{" "}
-                    <span className="text-[rgba(139,92,246,0.7)]">
+                    <span className="text-accent/70">
                       #{selectedTag}
                     </span>
                   </span>
@@ -114,7 +117,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
       {/* ===== TAG FILTER ===== */}
       {allTags.length > 0 && (
         <section className="pt-2 pb-2 px-8">
-          <div className="max-w-[1100px] mx-auto relative">
+          <div className="max-w-page mx-auto relative">
             <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none md:hidden" />
             <div
               ref={tagScrollRef}
@@ -127,7 +130,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                 className={cn(
                   "shrink-0 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border",
                   selectedTag === null
-                    ? "bg-[rgba(139,92,246,0.15)] border-[rgba(139,92,246,0.3)] text-[rgba(139,92,246,0.9)]"
+                    ? "bg-accent/15 border-accent/30 text-accent/90"
                     : "bg-white/[0.03] border-white/[0.06] text-white/45 hover:border-white/10 hover:text-white/60"
                 )}
               >
@@ -146,7 +149,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                   className={cn(
                     "shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border",
                     selectedTag === tag
-                      ? "bg-[rgba(139,92,246,0.15)] border-[rgba(139,92,246,0.3)] text-[rgba(139,92,246,0.9)]"
+                      ? "bg-accent/15 border-accent/30 text-accent/90"
                       : "bg-white/[0.03] border-white/[0.06] text-white/45 hover:border-white/10 hover:text-white/60"
                   )}
                 >
@@ -160,13 +163,13 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
       )}
 
       {/* Divider */}
-      <div className="max-w-[1100px] mx-auto px-8 pt-6">
+      <div className="max-w-page mx-auto px-8 pt-6">
         <div className="h-px bg-white/[0.06]" />
       </div>
 
       {/* ===== POST LIST ===== */}
       <section className="py-4 pb-24 px-8">
-        <div className="max-w-[1100px] mx-auto">
+        <div className="max-w-page mx-auto">
           {filteredPosts.length > 0 ? (
             <div className="divide-y divide-white/[0.04]">
               {filteredPosts.map((post, i) => (
@@ -181,7 +184,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                 >
                   <article className="relative py-6 md:py-7 transition-all duration-200">
                     {/* Left accent border on hover */}
-                    <div className="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-[rgba(139,92,246,0.8)] to-[rgba(96,165,250,0.6)] scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+                    <div className="absolute left-0 top-0 bottom-0 w-[3px] rounded-full bg-gradient-to-b from-accent/80 to-accent-blue/60 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
 
                     <div className="grid grid-cols-1 md:grid-cols-[120px_1fr_auto] gap-2 md:gap-8 items-start pl-0 group-hover:pl-4 transition-all duration-200">
                       {/* Date column */}
@@ -197,8 +200,8 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
 
                       {/* Title + excerpt column */}
                       <div className="min-w-0">
-                        <h2 className="font-heading text-lg md:text-xl font-medium leading-snug text-balance text-white/90 group-hover:text-[rgba(139,92,246,0.9)] transition-colors duration-200 mb-1.5">
-                          {post.title}
+                        <h2 className="font-heading text-lg md:text-xl font-medium leading-snug text-white/90 group-hover:text-accent/90 transition-colors duration-200 mb-1.5">
+                          <Balancer>{post.title}</Balancer>
                         </h2>
                         <p className="text-sm text-white/40 leading-relaxed line-clamp-2 break-keep">
                           {post.excerpt}
@@ -219,7 +222,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                             ))}
                           </div>
                         )}
-                        <ChevronRight className="size-4 text-white/15 group-hover:text-[rgba(139,92,246,0.7)] group-hover:translate-x-0.5 transition-all duration-200 hidden md:block" />
+                        <ChevronRight className="size-4 text-white/15 group-hover:text-accent/70 group-hover:translate-x-0.5 transition-all duration-200 hidden md:block" />
                       </div>
                     </div>
 
@@ -246,7 +249,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                 <div className="size-20 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm flex items-center justify-center">
                   <BookOpen className="size-8 text-white/15" />
                 </div>
-                <div className="absolute -top-1 -right-1 size-4 rounded-full bg-[rgba(139,92,246,0.2)]" />
+                <div className="absolute -top-1 -right-1 size-4 rounded-full bg-accent/20" />
               </div>
               <p className="text-lg text-white/60 font-heading">
                 {selectedTag && !searchQuery
@@ -269,7 +272,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                     setSelectedTag(null);
                     setSearchQuery("");
                   }}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm text-[rgba(139,92,246,0.7)] hover:text-[rgba(139,92,246,0.9)] transition-colors"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm text-accent/70 hover:text-accent/90 transition-colors"
                 >
                   전체 글 보기
                 </button>

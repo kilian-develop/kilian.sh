@@ -14,6 +14,17 @@
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-heading: 'Sora', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Accent palette — single source of truth for brand colors */
+  --color-accent: #8b5cf6;
+  --color-accent-light: #a78bfa;
+  --color-accent-blue: #60a5fa;
+  --color-accent-teal: #5eead4;
+  --color-accent-red: #f87171;
+  --color-accent-green: #4ade80;
+
+  /* Page container width */
+  --container-page: 1100px;
 }
 
 /* ─── Color Tokens (Dark-Only) ─── */

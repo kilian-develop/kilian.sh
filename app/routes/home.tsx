@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { Balancer } from "react-wrap-balancer";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { Image } from "@unpic/react";
 import type { Route } from "./+types/home";
@@ -32,7 +33,7 @@ export function meta(_: Route.MetaArgs) {
 function SectionHeader({ label, title }: { label: string; title: string }) {
   return (
     <FadeIn className="mb-12">
-      <span className="font-mono text-[0.7rem] uppercase tracking-widest text-[rgba(139,92,246,0.5)] block mb-2">
+      <span className="font-mono text-[0.7rem] uppercase tracking-widest text-accent/50 block mb-2">
         {label}
       </span>
       <h2 className="font-heading font-semibold text-2xl text-white/90">
@@ -50,7 +51,7 @@ function FeaturedPostCard({ post }: { post: PostMeta }) {
       <div className="glass-card p-6 md:p-10">
         <div className="flex items-center gap-2 mb-5">
           <span className="inline-block size-2 rounded-full bg-[#8b5cf6] animate-cursor" />
-          <span className="font-mono text-[0.7rem] uppercase tracking-widest text-[rgba(139,92,246,0.5)]">
+          <span className="font-mono text-[0.7rem] uppercase tracking-widest text-accent/50">
             Latest
           </span>
         </div>
@@ -94,7 +95,7 @@ function FeaturedPostCard({ post }: { post: PostMeta }) {
                 />
               ) : (
                 <>
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[rgba(139,92,246,0.08)] via-[rgba(96,165,250,0.06)] to-[rgba(94,234,212,0.04)] border border-white/[0.04]" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/[0.08] via-accent-blue/[0.06] to-accent-teal/[0.04] border border-white/[0.04]" />
                   <div className="absolute inset-4 rounded-xl border border-white/[0.03] flex items-center justify-center">
                     <BookOpen className="size-8 text-white/10" />
                   </div>
@@ -108,7 +109,7 @@ function FeaturedPostCard({ post }: { post: PostMeta }) {
           <span className="font-mono text-[0.65rem] text-white/20">
             {post.readingTime}
           </span>
-          <div className="flex items-center gap-1.5 text-sm font-medium text-[rgba(167,139,250,0.7)] opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="flex items-center gap-1.5 text-sm font-medium text-accent-light/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             읽어보기
             <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
           </div>
@@ -154,7 +155,7 @@ function PostCard({ post }: { post: PostMeta }) {
           <span className="font-mono text-[0.6rem] text-white/15">
             {post.readingTime}
           </span>
-          <ArrowRight className="size-3.5 text-white/15 group-hover:text-[rgba(167,139,250,0.6)] group-hover:translate-x-0.5 transition-all duration-200" />
+          <ArrowRight className="size-3.5 text-white/15 group-hover:text-accent-light/60 group-hover:translate-x-0.5 transition-all duration-200" />
         </div>
       </div>
     </Link>
@@ -172,9 +173,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <div className="min-h-screen">
       {/* ===== HERO — CSS animation (above fold, immediate) ===== */}
       <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-8 overflow-hidden">
-        <div className="max-w-[1100px] w-full mx-auto text-center">
+        <div className="max-w-page w-full mx-auto text-center">
           <div className="animate-fade-up stagger-1">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[rgba(139,92,246,0.5)]">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-accent/50">
               {siteConfig.role} Blog
             </span>
           </div>
@@ -183,7 +184,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             className="animate-fade-up stagger-2 aurora-text font-heading font-semibold leading-[1.1] mt-6 mb-6"
             style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
           >
-            한 줄의 코드, 한 걸음의 성장
+            <Balancer>한 줄의 코드, 한 걸음의 성장</Balancer>
           </h1>
 
           <p className="animate-fade-up stagger-3 text-white/45 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10">
@@ -195,7 +196,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <div className="animate-fade-up stagger-4">
             <Link
               to="/blog"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] text-white/75 text-sm font-medium backdrop-blur-sm transition-all duration-300 hover:border-[rgba(139,92,246,0.3)] hover:bg-white/[0.05] hover:text-white/90 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] group"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] text-white/75 text-sm font-medium backdrop-blur-sm transition-all duration-300 hover:border-accent/30 hover:bg-white/[0.05] hover:text-white/90 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] group"
             >
               기록 살펴보기
               <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -214,7 +215,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
       {/* ===== RECENT POSTS — scroll-triggered ===== */}
       <section className="py-20 md:py-28 px-8">
-        <div className="max-w-[1100px] mx-auto">
+        <div className="max-w-page mx-auto">
           <SectionHeader label="Recent Posts" title="최근 기록" />
 
           {recentPosts.length > 0 ? (
@@ -245,7 +246,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               <FadeIn delay={0.3} className="flex justify-center pt-6">
                 <Link
                   to="/blog"
-                  className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-[rgba(167,139,250,0.8)] transition-colors duration-200 group"
+                  className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-accent-light/80 transition-colors duration-200 group"
                 >
                   모든 글 보기
                   <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -268,12 +269,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
       {/* ===== ABOUT PREVIEW — scroll-triggered ===== */}
       <section className="py-20 md:py-28 px-8">
-        <div className="max-w-[1100px] mx-auto">
+        <div className="max-w-page mx-auto">
           <FadeIn>
             <div className="glass-card p-8 md:p-12 overflow-hidden">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-start">
                 <div className="flex flex-col items-center md:items-start gap-4">
-                  <div className="relative size-20 rounded-full bg-gradient-to-br from-[rgba(139,92,246,0.2)] via-[rgba(96,165,250,0.15)] to-[rgba(94,234,212,0.1)] border border-white/[0.08] overflow-hidden">
+                  <div className="relative size-20 rounded-full bg-gradient-to-br from-accent/20 via-accent-blue/15 to-accent-teal/10 border border-white/[0.08] overflow-hidden">
                     <Image
                       src="/images/profile.jpg"
                       alt="kilian 프로필"
@@ -289,7 +290,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                     <p className="font-heading font-semibold text-lg text-white/90">
                       {siteConfig.name}
                     </p>
-                    <p className="font-mono text-xs text-[rgba(139,92,246,0.5)] mt-0.5">
+                    <p className="font-mono text-xs text-accent/50 mt-0.5">
                       {siteConfig.role}
                     </p>
                   </div>
@@ -318,7 +319,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
                   <Link
                     to="/about"
-                    className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-[rgba(167,139,250,0.8)] transition-colors duration-200 group"
+                    className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-accent-light/80 transition-colors duration-200 group"
                   >
                     더 알아보기
                     <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />

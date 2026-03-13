@@ -29,13 +29,34 @@ description: Obsidian Gradient 디자인 시스템 — 컬러, 폰트, 컴포넌
 | Body | `Inter` (`--font-sans`) |
 | Code | `JetBrains Mono` (`--font-mono`) |
 
+## Tailwind Color Tokens (Opacity Modifier)
+
+`@theme`에 정의된 커스텀 색상을 Tailwind v4 opacity modifier 구문으로 사용:
+
+| Token | CSS Variable | Hex | 사용 예 |
+|-------|-------------|-----|---------|
+| `accent` | `--color-accent` | `#8b5cf6` | `text-accent/50`, `bg-accent/[0.08]` |
+| `accent-light` | `--color-accent-light` | `#a78bfa` | `text-accent-light/70`, `hover:text-accent-light/80` |
+| `accent-blue` | `--color-accent-blue` | `#60a5fa` | `via-accent-blue/15`, `via-accent-blue/[0.06]` |
+| `accent-teal` | `--color-accent-teal` | `#5eead4` | `to-accent-teal/10`, `to-accent-teal/[0.04]` |
+
+- 표준 배수 opacity: `/50`, `/80`, `/15` 등
+- 비표준 opacity: `/[0.08]`, `/[0.03]`, `/[0.06]` 등 bracket 구문
+- shadow 값은 Tailwind opacity modifier가 적용 안 되므로 `hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]` 유지
+
+## Container Width Token
+
+| Token | CSS Variable | Value |
+|-------|-------------|-------|
+| `max-w-page` | `--max-width-page` | `1100px` |
+
 ## Component Patterns
 
 - **Glass card**: `bg-white/[0.02] border-white/[0.06] backdrop-blur`
 - **Tag pill**: `getTagColor(i)` — purple/blue/teal 순환
-- **Mono label**: `font-mono text-[0.7rem] uppercase tracking-widest text-[rgba(139,92,246,0.5)]`
-- **Hover accent**: `hover:text-[rgba(167,139,250,0.8)]`
-- **Button (CTA)**: `border-[rgba(139,92,246,0.3)] bg-white/[0.03] hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]`
+- **Mono label**: `font-mono text-[0.7rem] uppercase tracking-widest text-accent/50`
+- **Hover accent**: `hover:text-accent-light/80`
+- **Button (CTA)**: `hover:border-accent/30 bg-white/[0.03] hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]`
 
 ## CSS Class Convention
 

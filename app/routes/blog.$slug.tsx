@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { Balancer } from "react-wrap-balancer";
 import { ArrowLeft } from "lucide-react";
 import { MDXProvider } from "@mdx-js/react";
 import type { Route } from "./+types/blog.$slug";
@@ -94,10 +95,10 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
       <article className="min-h-screen">
         {/* Back Navigation */}
         <div className="pt-24 md:pt-32 px-8">
-          <div className="max-w-[1100px] mx-auto">
+          <div className="max-w-page mx-auto">
             <Link
               to="/blog"
-              className="animate-fade-in inline-flex items-center gap-1.5 text-sm text-white/30 hover:text-[rgba(139,92,246,0.8)] transition-colors duration-200 group"
+              className="animate-fade-in inline-flex items-center gap-1.5 text-sm text-white/30 hover:text-accent/80 transition-colors duration-200 group"
             >
               <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
               블로그로 돌아가기
@@ -107,10 +108,10 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
 
         {/* Post Header */}
         <header className="pt-8 pb-10 px-8">
-          <div className="max-w-[1100px] mx-auto">
+          <div className="max-w-page mx-auto">
             <div className="animate-fade-up">
               <div className="flex items-center gap-3 mb-5">
-                <span className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-[rgba(139,92,246,0.5)]">
+                <span className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-accent/50">
                   {formatDateMono(post.date)}
                 </span>
                 <span className="text-white/[0.08]">|</span>
@@ -119,8 +120,8 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
                 </span>
               </div>
 
-              <h1 className="font-heading text-3xl md:text-[2.75rem] md:leading-[1.2] font-semibold leading-tight tracking-tight text-balance text-white/95 mb-6">
-                {post.title}
+              <h1 className="font-heading text-3xl md:text-[2.75rem] md:leading-[1.2] font-semibold leading-tight tracking-tight text-white/95 mb-6">
+                <Balancer>{post.title}</Balancer>
               </h1>
 
               {post.tags.length > 0 && (
@@ -143,17 +144,17 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
         </header>
 
         {/* Decorative divider */}
-        <div className="max-w-[1100px] mx-auto px-8">
+        <div className="max-w-page mx-auto px-8">
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.4)]" />
+            <div className="size-1.5 rounded-full bg-accent/40" />
             <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
         </div>
 
         {/* Post Content with TOC sidebar */}
         <div className="py-10 px-8">
-          <div className="max-w-[1100px] mx-auto xl:grid xl:grid-cols-[1fr_200px] xl:gap-12">
+          <div className="max-w-page mx-auto xl:grid xl:grid-cols-[1fr_200px] xl:gap-12">
             <div className="animate-fade-up stagger-2 prose-blog min-w-0">
               {MdxContent ? (
                 <MDXProvider components={mdxComponents}>
@@ -171,30 +172,30 @@ export default function BlogPost({ loaderData }: Route.ComponentProps) {
         </div>
 
         {/* Bottom Divider */}
-        <div className="max-w-[1100px] mx-auto px-8">
+        <div className="max-w-page mx-auto px-8">
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-white/[0.06]" />
-            <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.4)]" />
+            <div className="size-1.5 rounded-full bg-accent/40" />
             <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
         </div>
 
         {/* Comments */}
         <div className="px-8">
-          <div className="max-w-[1100px] mx-auto">
+          <div className="max-w-page mx-auto">
             <GiscusComments slug={post.slug} />
           </div>
         </div>
 
         {/* Post Footer */}
         <footer className="py-12 pb-24 px-8">
-          <div className="max-w-[1100px] mx-auto space-y-10">
+          <div className="max-w-page mx-auto space-y-10">
             <PostNavigation prev={adjacent.prev} next={adjacent.next} />
 
             <div>
               <Link
                 to="/blog"
-                className="inline-flex items-center gap-1.5 text-sm text-white/30 hover:text-[rgba(139,92,246,0.8)] transition-colors duration-200 group"
+                className="inline-flex items-center gap-1.5 text-sm text-white/30 hover:text-accent/80 transition-colors duration-200 group"
               >
                 <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
                 다른 글 보기

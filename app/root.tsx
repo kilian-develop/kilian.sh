@@ -68,7 +68,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[rgba(139,92,246,0.9)] focus:text-white focus:text-sm focus:font-medium"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent/90 focus:text-white focus:text-sm focus:font-medium"
         >
           본문으로 건너뛰기
         </a>
@@ -133,8 +133,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
               404
             </span>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="size-16 rounded-full bg-[rgba(139,92,246,0.08)] border border-[rgba(139,92,246,0.15)] flex items-center justify-center backdrop-blur-sm">
-                <span className="text-2xl text-[rgba(167,139,250,0.6)]">?</span>
+              <div className="size-16 rounded-full bg-accent/[0.08] border border-accent/15 flex items-center justify-center backdrop-blur-sm">
+                <span className="text-2xl text-accent-light/60">?</span>
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href="/"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(139,92,246,0.25)] bg-[rgba(139,92,246,0.08)] text-[rgba(167,139,250,0.9)] text-sm font-medium transition-all duration-200 hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.4)]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-accent/25 bg-accent/[0.08] text-accent-light/90 text-sm font-medium transition-all duration-200 hover:bg-accent/15 hover:border-accent/40"
             >
               홈으로 돌아가기
             </a>
@@ -207,7 +207,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
         <a
           href="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(139,92,246,0.25)] bg-[rgba(139,92,246,0.08)] text-[rgba(167,139,250,0.9)] text-sm font-medium transition-all duration-200 hover:bg-[rgba(139,92,246,0.15)] hover:border-[rgba(139,92,246,0.4)]"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-accent/25 bg-accent/[0.08] text-accent-light/90 text-sm font-medium transition-all duration-200 hover:bg-accent/15 hover:border-accent/40"
         >
           홈으로 돌아가기
         </a>

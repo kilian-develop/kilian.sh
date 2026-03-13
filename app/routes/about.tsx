@@ -55,9 +55,9 @@ export default function About() {
     <div className="min-h-screen">
       {/* ===== HERO SECTION ===== */}
       <section className="pt-24 pb-16 md:pt-36 md:pb-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-10">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)]">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50">
               About Me
             </span>
           </div>
@@ -82,7 +82,7 @@ export default function About() {
               <h1 className="animate-fade-up stagger-2 font-heading text-4xl md:text-6xl font-semibold leading-tight tracking-tight text-white/90 mb-2">
                 박명규
               </h1>
-              <p className="animate-fade-up stagger-3 text-lg font-mono text-[rgba(139,92,246,0.7)] mb-3">
+              <p className="animate-fade-up stagger-3 text-lg font-mono text-accent/70 mb-3">
                 Backend Developer
               </p>
               <div className="animate-fade-up stagger-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/40">
@@ -110,15 +110,15 @@ export default function About() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== CAREER SECTION ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-12">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50 block mb-3">
               Career
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
@@ -137,7 +137,7 @@ export default function About() {
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                   <div className="flex items-center gap-3">
-                    <Building2 className="size-5 text-[rgba(139,92,246,0.6)]" />
+                    <Building2 className="size-5 text-accent/60" />
                     <h3 className="font-heading text-lg font-semibold text-white/90">
                       {item.company}
                     </h3>
@@ -151,7 +151,7 @@ export default function About() {
                 <ul className="space-y-2">
                   {item.highlights.map((highlight) => (
                     <li key={highlight} className="flex items-start gap-2.5 text-sm text-white/55 leading-relaxed">
-                      <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.4)] mt-1.5 flex-shrink-0" />
+                      <div className="size-1.5 rounded-full bg-accent/40 mt-1.5 flex-shrink-0" />
                       {highlight}
                     </li>
                   ))}
@@ -163,15 +163,15 @@ export default function About() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== PHILOSOPHY SECTION ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-10">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50 block mb-3">
               Philosophy
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
@@ -197,15 +197,15 @@ export default function About() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== SKILLS / TECH STACK SECTION ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="max-w-page mx-auto px-4 md:px-8">
           <div className="animate-fade-up mb-12">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-accent/50 block mb-3">
               Tech Stack
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
@@ -227,7 +227,7 @@ export default function About() {
                     {items.map((skill) => (
                       <span
                         key={skill}
-                        className="font-mono text-[0.65rem] px-3 py-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-white/35 hover:border-[rgba(139,92,246,0.2)] hover:text-white/55 hover:bg-[rgba(139,92,246,0.05)] transition-all cursor-default"
+                        className="font-mono text-[0.65rem] px-3 py-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] text-white/35 hover:border-accent/20 hover:text-white/55 hover:bg-accent/5 transition-all cursor-default"
                       >
                         {skill}
                       </span>
@@ -241,7 +241,7 @@ export default function About() {
       </section>
 
       {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 

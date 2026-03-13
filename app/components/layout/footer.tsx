@@ -29,7 +29,7 @@ import { siteConfig } from "~/data/site";
 export function Footer() {
   return (
     <footer className="relative z-10 mt-auto border-t border-white/[0.04]">
-      <div className="mx-auto max-w-[1100px] px-8 py-8">
+      <div className="mx-auto max-w-page px-8 py-8">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <p className="text-xs font-light text-white/20">
             &copy; {new Date().getFullYear()} kilian.sh

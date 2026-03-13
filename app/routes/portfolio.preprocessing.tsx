@@ -62,8 +62,8 @@ function BeforeArchDiagram() {
       <div className="flex flex-col items-center gap-3">
         <div className={nodeDefault}>클라이언트 요청</div>
         <Arrow />
-        <div className="rounded-xl border border-[rgba(248,113,113,0.15)] bg-[rgba(248,113,113,0.03)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(248,113,113,0.5)] mb-3 text-center">
+        <div className="rounded-xl border border-accent-red/15 bg-accent-red/[0.03] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent-red/50 mb-3 text-center">
             단일 API (동기 처리)
           </p>
           <div className="flex flex-col items-center gap-2.5">
@@ -84,7 +84,7 @@ function BeforeArchDiagram() {
           {["Read Timeout", "I/O 과부하", "처리량 병목", "SPOF"].map((p) => (
             <span
               key={p}
-              className="text-[0.6rem] px-2 py-1 rounded-md bg-[rgba(248,113,113,0.06)] border border-[rgba(248,113,113,0.12)] text-[rgba(248,113,113,0.6)] font-mono"
+              className="text-[0.6rem] px-2 py-1 rounded-md bg-accent-red/[0.06] border border-accent-red/[0.12] text-accent-red/60 font-mono"
             >
               {p}
             </span>
@@ -108,8 +108,8 @@ function AfterArchDiagram() {
           <span className={arrowText}>조회/콜백</span>
         </div>
 
-        <div className="rounded-xl border border-[rgba(96,165,250,0.15)] bg-[rgba(96,165,250,0.03)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(96,165,250,0.5)] mb-2 text-center">API</p>
+        <div className="rounded-xl border border-accent-blue/15 bg-accent-blue/[0.03] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent-blue/50 mb-2 text-center">API</p>
           <div className="flex flex-wrap justify-center gap-2">
             <div className={nodeBlue}>전처리 요청 수신</div>
             <div className={nodeBlue}>문장 데이터 조회</div>
@@ -128,8 +128,8 @@ function AfterArchDiagram() {
           <span className={arrowText}>이벤트 발행</span>
         </div>
 
-        <div className="rounded-xl border border-[rgba(139,92,246,0.15)] bg-[rgba(139,92,246,0.03)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(139,92,246,0.5)] mb-2 text-center">Batch</p>
+        <div className="rounded-xl border border-accent/15 bg-accent/[0.03] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent/50 mb-2 text-center">Batch</p>
           <div className="flex flex-wrap justify-center gap-2">
             <div className={nodePurple}>Outbox 조회</div>
             <Arrow horizontal />
@@ -139,8 +139,8 @@ function AfterArchDiagram() {
 
         <Arrow />
 
-        <div className="rounded-xl border border-[rgba(94,234,212,0.15)] bg-[rgba(94,234,212,0.03)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(94,234,212,0.5)] mb-2 text-center">
+        <div className="rounded-xl border border-accent-teal/15 bg-accent-teal/[0.03] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent-teal/50 mb-2 text-center">
             Worker (Kafka Consumer)
           </p>
           <div className="flex flex-wrap justify-center gap-2">
@@ -184,7 +184,7 @@ function PerformanceTable() {
         </thead>
         <tbody>
           <tr className="border-b border-white/[0.04]">
-            <td className="font-mono text-[0.65rem] text-[rgba(248,113,113,0.6)] py-2.5 pr-4">적용 전</td>
+            <td className="font-mono text-[0.65rem] text-accent-red/60 py-2.5 pr-4">적용 전</td>
             {data.map((d) => (
               <td key={d.sentences} className="font-mono text-[0.65rem] text-white/45 py-2.5 text-center px-2">
                 {d.before}
@@ -192,7 +192,7 @@ function PerformanceTable() {
             ))}
           </tr>
           <tr>
-            <td className="font-mono text-[0.65rem] text-[rgba(74,222,128,0.6)] py-2.5 pr-4">적용 후</td>
+            <td className="font-mono text-[0.65rem] text-accent-green/60 py-2.5 pr-4">적용 후</td>
             {data.map((d) => (
               <td key={d.sentences} className="font-mono text-[0.65rem] text-white/45 py-2.5 text-center px-2">
                 {d.after}
@@ -215,13 +215,13 @@ export default function PreprocessingProject() {
         tags={["Spring Boot", "Kafka", "Spring Batch", "MariaDB", "MongoDB"]}
       />
 
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== CONTENT ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8 space-y-6">
+        <div className="max-w-page mx-auto px-4 md:px-8 space-y-6">
           {/* Overview */}
           <div className="animate-fade-up glass-card p-6">
             <h2 className="font-heading text-base font-semibold text-white/80 mb-3">개요</h2>

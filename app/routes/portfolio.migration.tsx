@@ -30,8 +30,8 @@ function MigrationStateDiagram() {
     <div className="glass-card p-5 md:p-6">
       <p className={sectionLabel}>시스템 구조 변화</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-[rgba(248,113,113,0.12)] bg-[rgba(248,113,113,0.02)] p-4">
-          <p className="text-[0.6rem] font-mono text-[rgba(248,113,113,0.5)] mb-3 text-center">
+        <div className="rounded-xl border border-accent-red/[0.12] bg-accent-red/[0.02] p-4">
+          <p className="text-[0.6rem] font-mono text-accent-red/50 mb-3 text-center">
             Before — 이중 구조
           </p>
           <div className="flex flex-col items-center gap-2">
@@ -48,8 +48,8 @@ function MigrationStateDiagram() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[rgba(74,222,128,0.12)] bg-[rgba(74,222,128,0.02)] p-4">
-          <p className="text-[0.6rem] font-mono text-[rgba(74,222,128,0.5)] mb-3 text-center">
+        <div className="rounded-xl border border-accent-green/[0.12] bg-accent-green/[0.02] p-4">
+          <p className="text-[0.6rem] font-mono text-accent-green/50 mb-3 text-center">
             After — 단일 구조
           </p>
           <div className="flex flex-col items-center gap-2">
@@ -69,8 +69,8 @@ function MigrationFlowDiagram() {
     <div className="glass-card p-5 md:p-6">
       <p className={sectionLabel}>마이그레이션 파이프라인</p>
       <div className="flex flex-col items-center gap-3">
-        <div className="rounded-xl border border-[rgba(248,113,113,0.12)] bg-[rgba(248,113,113,0.02)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(248,113,113,0.4)] mb-2 text-center">
+        <div className="rounded-xl border border-accent-red/[0.12] bg-accent-red/[0.02] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent-red/40 mb-2 text-center">
             데이터 수집
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
@@ -90,8 +90,8 @@ function MigrationFlowDiagram() {
 
         <Arrow />
 
-        <div className="rounded-xl border border-[rgba(74,222,128,0.12)] bg-[rgba(74,222,128,0.02)] p-4 w-full">
-          <p className="text-[0.6rem] font-mono text-[rgba(74,222,128,0.4)] mb-2 text-center">
+        <div className="rounded-xl border border-accent-green/[0.12] bg-accent-green/[0.02] p-4 w-full">
+          <p className="text-[0.6rem] font-mono text-accent-green/40 mb-2 text-center">
             Spring Batch 처리
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
@@ -127,13 +127,13 @@ export default function MigrationProject() {
         tags={["Spring Batch", "Kafka Connect", "RxJava", "MariaDB", "MongoDB", "GridFS"]}
       />
 
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="max-w-page mx-auto px-4 md:px-8">
         <div className="section-orb" />
       </div>
 
       {/* ===== CONTENT ===== */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8 space-y-6">
+        <div className="max-w-page mx-auto px-4 md:px-8 space-y-6">
           {/* Overview */}
           <div className="animate-fade-up glass-card p-6">
             <h2 className="font-heading text-base font-semibold text-white/80 mb-3">개요</h2>

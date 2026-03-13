@@ -22,9 +22,9 @@ export const navItems = [
  * Used across post cards, tag pills, and skill badges.
  */
 const TAG_COLORS = [
-  "bg-[rgba(139,92,246,0.1)] text-[rgba(167,139,250,0.7)] border-[rgba(139,92,246,0.12)]",
-  "bg-[rgba(96,165,250,0.08)] text-[rgba(96,165,250,0.7)] border-[rgba(96,165,250,0.1)]",
-  "bg-[rgba(94,234,212,0.06)] text-[rgba(94,234,212,0.65)] border-[rgba(94,234,212,0.1)]",
+  "bg-accent/10 text-accent-light/70 border-accent/[0.12]",
+  "bg-accent-blue/[0.08] text-accent-blue/70 border-accent-blue/10",
+  "bg-accent-teal/[0.06] text-accent-teal/[0.65] border-accent-teal/10",
 ] as const;
 
 export function getTagColor(index: number): string {
@@ -40,6 +40,22 @@ export function buildMeta(title: string, description: string, path: string) {
     { tagName: "link", rel: "canonical", href: `${siteConfig.url}${path}` },
   ];
 }
+
+/** Giscus comment widget configuration */
+export const giscusConfig = {
+  repo: "kilian-develop/kilian.sh",
+  repoId: "R_kgDORk-6Gg",
+  category: "General",
+  categoryId: "DIC_kwDORk-6Gs4C4N0s",
+  mapping: "pathname",
+  strict: "0",
+  reactionsEnabled: "1",
+  emitMetadata: "0",
+  inputPosition: "top",
+  theme: "transparent_dark",
+  lang: "ko",
+  loading: "lazy",
+} as const;
 
 export const techTags = [
   "Java",

@@ -5,11 +5,11 @@ const nodeBase =
   "rounded-lg border text-[0.65rem] md:text-xs px-2.5 py-1.5 md:px-3 md:py-2 text-center leading-snug font-mono whitespace-nowrap";
 
 export const nodeDefault = `${nodeBase} bg-white/[0.04] border-white/[0.08] text-white/60`;
-export const nodePurple = `${nodeBase} bg-[rgba(139,92,246,0.08)] border-[rgba(139,92,246,0.2)] text-[rgba(167,139,250,0.8)]`;
-export const nodeBlue = `${nodeBase} bg-[rgba(96,165,250,0.06)] border-[rgba(96,165,250,0.15)] text-[rgba(96,165,250,0.75)]`;
-export const nodeTeal = `${nodeBase} bg-[rgba(94,234,212,0.06)] border-[rgba(94,234,212,0.15)] text-[rgba(94,234,212,0.7)]`;
-export const nodeRed = `${nodeBase} bg-[rgba(248,113,113,0.06)] border-[rgba(248,113,113,0.15)] text-[rgba(248,113,113,0.7)]`;
-export const nodeGreen = `${nodeBase} bg-[rgba(74,222,128,0.06)] border-[rgba(74,222,128,0.15)] text-[rgba(74,222,128,0.7)]`;
+export const nodePurple = `${nodeBase} bg-accent/[0.08] border-accent/20 text-accent-light/80`;
+export const nodeBlue = `${nodeBase} bg-accent-blue/[0.06] border-accent-blue/15 text-accent-blue/[0.75]`;
+export const nodeTeal = `${nodeBase} bg-accent-teal/[0.06] border-accent-teal/15 text-accent-teal/70`;
+export const nodeRed = `${nodeBase} bg-accent-red/[0.06] border-accent-red/15 text-accent-red/70`;
+export const nodeGreen = `${nodeBase} bg-accent-green/[0.06] border-accent-green/15 text-accent-green/70`;
 export const arrowText = "text-[0.6rem] text-white/30 font-mono";
 export const sectionLabel =
   "font-mono text-[0.65rem] uppercase tracking-[0.15em] text-white/30 mb-3";
@@ -45,9 +45,9 @@ export function ImpactCard({ items }: { items: { metric: string; detail: string 
         {items.map((item) => (
           <div
             key={item.metric}
-            className="rounded-lg border border-[rgba(139,92,246,0.1)] bg-[rgba(139,92,246,0.03)] p-4"
+            className="rounded-lg border border-accent/10 bg-accent/[0.03] p-4"
           >
-            <p className="font-heading text-lg font-semibold text-[rgba(167,139,250,0.85)] mb-1">
+            <p className="font-heading text-lg font-semibold text-accent-light/[0.85] mb-1">
               {item.metric}
             </p>
             <p className="text-[0.7rem] text-white/45">{item.detail}</p>
@@ -59,6 +59,6 @@ export function ImpactCard({ items }: { items: { metric: string; detail: string 
 }
 
 /* ─── Bullet list helpers ─── */
-export const problemDot = "size-1.5 rounded-full bg-[rgba(248,113,113,0.4)] mt-1.5 flex-shrink-0";
-export const analysisDot = "size-1.5 rounded-full bg-[rgba(139,92,246,0.4)] mt-1.5 flex-shrink-0";
-export const solutionDot = "size-1.5 rounded-full bg-[rgba(94,234,212,0.4)] mt-1.5 flex-shrink-0";
+export const problemDot = "size-1.5 rounded-full bg-accent-red/40 mt-1.5 flex-shrink-0";
+export const analysisDot = "size-1.5 rounded-full bg-accent/40 mt-1.5 flex-shrink-0";
+export const solutionDot = "size-1.5 rounded-full bg-accent-teal/40 mt-1.5 flex-shrink-0";

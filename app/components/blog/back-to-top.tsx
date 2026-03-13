@@ -31,7 +31,7 @@ export function BackToTop() {
       className={cn(
         "fixed bottom-8 right-8 z-50 flex items-center justify-center size-10 rounded-full",
         "bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px]",
-        "text-white/45 hover:text-[rgba(139,92,246,0.8)] hover:border-[rgba(139,92,246,0.3)]",
+        "text-white/45 hover:text-accent/80 hover:border-accent/30",
         "transition-all duration-300 ease-out",
         show
           ? "opacity-100 translate-y-0"
