@@ -14,7 +14,6 @@ import { Toaster } from "sonner";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Route } from "./+types/root";
-import { TooltipProvider } from "~/components/ui/tooltip";
 import { Header } from "~/components/layout/header";
 import { Footer } from "~/components/layout/footer";
 import { Analytics as GAAnalytics } from "~/components/analytics";
@@ -67,6 +66,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <VercelAnalytics />
         <SpeedInsights />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[rgba(139,92,246,0.9)] focus:text-white focus:text-sm focus:font-medium"
+        >
+          본문으로 건너뛰기
+        </a>
         <div className="ambient-bg" aria-hidden="true" />
         <div className="particles" aria-hidden="true">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -74,7 +79,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           ))}
         </div>
         <div className="noise-overlay" aria-hidden="true" />
-        <TooltipProvider>{children}</TooltipProvider>
+        {children}
         <Toaster
           theme="dark"
           position="bottom-right"
@@ -108,7 +113,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <main className="relative z-10">
+      <main id="main-content" className="relative z-10">
         <Outlet />
       </main>
       <Footer />

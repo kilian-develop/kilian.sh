@@ -77,30 +77,33 @@ export function Header() {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <nav className="border-t border-white/[0.04] bg-black/80 backdrop-blur-[20px] md:hidden">
-          <div className="mx-auto flex max-w-[1100px] flex-col gap-1 px-6 py-4">
-            {navItems.map(({ to, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === "/"}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  cn(
-                    "rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-200",
-                    isActive
-                      ? "text-white/90 bg-white/[0.03]"
-                      : "text-white/45 hover:text-white/85 hover:bg-white/[0.03]"
-                  )
-                }
-              >
-                {label}
-              </NavLink>
-            ))}
-          </div>
-        </nav>
-      )}
+      <nav
+        className={cn(
+          "border-t border-white/[0.04] bg-black/80 backdrop-blur-[20px] md:hidden overflow-hidden transition-all duration-300 ease-out",
+          mobileOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0 border-t-transparent"
+        )}
+      >
+        <div className="mx-auto flex max-w-[1100px] flex-col gap-1 px-6 py-4">
+          {navItems.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === "/"}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                cn(
+                  "rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+                  isActive
+                    ? "text-white/90 bg-white/[0.03]"
+                    : "text-white/45 hover:text-white/85 hover:bg-white/[0.03]"
+                )
+              }
+            >
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
     </header>
   );
 }

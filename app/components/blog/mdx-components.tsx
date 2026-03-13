@@ -70,6 +70,8 @@ export const mdxComponents: Record<string, React.ComponentType<any>> = {
     );
   },
 
+  mark: (props: any) => <mark className="highlight-mark" {...props} />,
+
   a: ({
     href,
     children,

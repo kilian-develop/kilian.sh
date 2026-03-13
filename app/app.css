@@ -447,6 +447,11 @@
   transform: translateY(-2px);
 }
 
+.glass-card:active {
+  transform: translateY(0);
+  transition-duration: 0.1s;
+}
+
 .glass-card:hover::before {
   opacity: 1;
 }
@@ -657,6 +662,15 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
+.prose-blog mark,
+.prose-blog .highlight-mark {
+  background: linear-gradient(120deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.25) 100%);
+  padding: 0.1em 0.3em;
+  border-radius: 0.2em;
+  color: rgba(196, 181, 253, 0.95);
+  font-weight: 500;
+}
+
 .prose-blog ul,
 .prose-blog ol {
   margin-bottom: 1.25rem;
@@ -858,6 +872,12 @@
   box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
 }
 
+/* Plain code blocks (no language / no Shiki) */
+.prose-blog pre:not(.code-block-wrapper pre) {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
 .code-block-wrapper pre {
   margin: 0;
   padding: 1.25rem 1.5rem;
@@ -1019,9 +1039,52 @@
   font-weight: 500;
 }
 
+.toc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.2) transparent;
+}
+
+.toc-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.toc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 3px;
+}
+
 /* ═══════════════════════════════════════════════════════
    UTILITY CLASSES
    ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════
+   STAGGER CONTAINER (IntersectionObserver-based)
+   ═══════════════════════════════════════════════════════ */
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stagger-container.is-visible .stagger-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-container.is-visible .stagger-item:nth-child(2) { transition-delay: 0.08s; }
+.stagger-container.is-visible .stagger-item:nth-child(3) { transition-delay: 0.16s; }
+.stagger-container.is-visible .stagger-item:nth-child(4) { transition-delay: 0.24s; }
+.stagger-container.is-visible .stagger-item:nth-child(5) { transition-delay: 0.32s; }
+.stagger-container.is-visible .stagger-item:nth-child(6) { transition-delay: 0.4s; }
+.stagger-container.is-visible .stagger-item:nth-child(7) { transition-delay: 0.48s; }
+.stagger-container.is-visible .stagger-item:nth-child(8) { transition-delay: 0.56s; }
 
 .font-heading {
   font-family: var(--font-heading);

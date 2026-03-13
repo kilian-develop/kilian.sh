@@ -11,6 +11,8 @@ import type { Route } from "./+types/blog._index";
 import { getAllPosts } from "~/lib/posts.server";
 import { formatDateMono } from "~/lib/format";
 import { cn } from "~/lib/utils";
+import { buildMeta } from "~/data/site";
+import { useSearch } from "~/lib/use-search";
 
 export async function loader(_: Route.LoaderArgs) {
   const posts = await getAllPosts();
@@ -18,41 +20,24 @@ export async function loader(_: Route.LoaderArgs) {
 }
 
 export function meta(_: Route.MetaArgs) {
-  return [
-    { title: "블로그 | kilian.sh" },
-    {
-      name: "description",
-      content:
-        "클린 아키텍처, 도메인 주도 설계, Spring/Java 개발에 관한 기술 블로그",
-    },
-    { property: "og:title", content: "블로그 | kilian.sh" },
-    {
-      property: "og:description",
-      content:
-        "클린 아키텍처, 도메인 주도 설계, Spring/Java 개발에 관한 기술 블로그",
-    },
-    { tagName: "link", rel: "canonical", href: "https://kilian.sh/blog" },
-  ];
+  return buildMeta(
+    "블로그",
+    "클린 아키텍처, 도메인 주도 설계, Spring/Java 개발에 관한 기술 블로그",
+    "/blog",
+  );
 }
 
 export default function BlogIndex({ loaderData }: Route.ComponentProps) {
   const { posts } = loaderData;
-  const [searchQuery, setSearchQuery] = useState("");
+  const { query: searchQuery, setQuery: setSearchQuery, matches } = useSearch(posts);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const tagScrollRef = useRef<HTMLDivElement>(null);
 
   const allTags = Array.from(new Set(posts.flatMap((post) => post.tags)));
 
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = posts.filter((post, i) => {
     const matchesTag = !selectedTag || post.tags.includes(selectedTag);
-    const matchesSearch =
-      !searchQuery ||
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    return matchesTag && matchesSearch;
+    return matchesTag && matches(i);
   });
 
   return (
@@ -129,7 +114,8 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
       {/* ===== TAG FILTER ===== */}
       {allTags.length > 0 && (
         <section className="pt-2 pb-2 px-8">
-          <div className="max-w-[1100px] mx-auto">
+          <div className="max-w-[1100px] mx-auto relative">
+            <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none md:hidden" />
             <div
               ref={tagScrollRef}
               className="animate-fade-up stagger-3 flex items-center gap-2 overflow-x-auto scrollbar-none pb-2 -mb-2"
@@ -214,7 +200,7 @@ export default function BlogIndex({ loaderData }: Route.ComponentProps) {
                         <h2 className="font-heading text-lg md:text-xl font-medium leading-snug text-balance text-white/90 group-hover:text-[rgba(139,92,246,0.9)] transition-colors duration-200 mb-1.5">
                           {post.title}
                         </h2>
-                        <p className="text-sm text-white/40 leading-relaxed line-clamp-2">
+                        <p className="text-sm text-white/40 leading-relaxed line-clamp-2 break-keep">
                           {post.excerpt}
                         </p>
                       </div>

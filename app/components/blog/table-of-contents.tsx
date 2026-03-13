@@ -4,6 +4,7 @@ import { cn } from "~/lib/utils";
 interface TocHeading {
   id: string;
   text: string;
+  level: number;
 }
 
 export function TableOfContents({ content }: { content: string }) {
@@ -11,7 +12,6 @@ export function TableOfContents({ content }: { content: string }) {
   const [activeId, setActiveId] = useState<string>("");
   const headingsFound = useRef(false);
 
-  // Read headings from rendered DOM — retry with MutationObserver if needed
   useEffect(() => {
     headingsFound.current = false;
 
@@ -19,27 +19,33 @@ export function TableOfContents({ content }: { content: string }) {
       const prose = document.querySelector(".prose-blog");
       if (!prose) return false;
 
-      const h2s = prose.querySelectorAll("h2[id]");
-      if (h2s.length === 0) return false;
+      const els = prose.querySelectorAll("h1[id], h2[id], h3[id]");
+      if (els.length === 0) return false;
 
-      const items: TocHeading[] = Array.from(h2s).map((el) => ({
+      const items: TocHeading[] = Array.from(els).map((el) => ({
         id: el.id,
         text: el.textContent?.trim() || "",
+        level: parseInt(el.tagName[1]),
       }));
-      setHeadings(items);
+
+      // Normalize levels: treat the smallest heading level found as "top"
+      const minLevel = Math.min(...items.map((h) => h.level));
+      const normalized = items.map((h) => ({
+        ...h,
+        level: h.level - minLevel, // 0 = top, 1 = sub, 2 = sub-sub
+      }));
+
+      setHeadings(normalized);
       headingsFound.current = true;
 
-      // Set initial active to first heading
-      if (items.length > 0 && !activeId) {
-        setActiveId(items[0].id);
+      if (normalized.length > 0 && !activeId) {
+        setActiveId(normalized[0].id);
       }
       return true;
     }
 
-    // Try immediately
     if (readHeadings()) return;
 
-    // If not found yet, use MutationObserver to wait for MDX to render
     const observer = new MutationObserver(() => {
       if (headingsFound.current) {
         observer.disconnect();
@@ -55,7 +61,6 @@ export function TableOfContents({ content }: { content: string }) {
       subtree: true,
     });
 
-    // Safety timeout: stop observing after 5s
     const timer = setTimeout(() => observer.disconnect(), 5000);
 
     return () => {
@@ -64,7 +69,6 @@ export function TableOfContents({ content }: { content: string }) {
     };
   }, [content]);
 
-  // Scroll-based active heading tracking
   useEffect(() => {
     if (headings.length === 0) return;
 
@@ -75,10 +79,7 @@ export function TableOfContents({ content }: { content: string }) {
     if (headingEls.length === 0) return;
 
     function onScroll() {
-      const scrollY = window.scrollY;
-      const offset = 100; // header height offset
-
-      // Find the last heading that has scrolled past the offset
+      const offset = 100;
       let current = headingEls[0]?.id || "";
       for (const el of headingEls) {
         if (el.getBoundingClientRect().top <= offset) {
@@ -90,27 +91,31 @@ export function TableOfContents({ content }: { content: string }) {
       setActiveId(current);
     }
 
-    // Set initial state
     onScroll();
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [headings]);
 
+  const paddingByLevel = ["pl-4", "pl-7", "pl-10"];
+  const sizeByLevel = ["text-[0.8125rem]", "text-[0.75rem]", "text-[0.7rem]"];
+
   return (
     <nav className="toc-sidebar hidden xl:block">
-      <div className="sticky top-32">
+      <div className="sticky top-32 max-h-[calc(100vh-10rem)] overflow-y-auto toc-scroll">
         <p className="font-mono text-[0.7rem] font-medium uppercase tracking-widest text-[rgba(139,92,246,0.5)] mb-4">
           목차
         </p>
         {headings.length > 0 && (
           <ul className="space-y-2 border-l border-white/[0.06]">
-            {headings.map(({ id, text }) => (
+            {headings.map(({ id, text, level }) => (
               <li key={id}>
                 <a
                   href={`#${id}`}
                   className={cn(
-                    "toc-link block pl-4 py-0.5 text-[0.8125rem] leading-snug transition-all duration-200 border-l-2 -ml-px",
+                    "toc-link block py-0.5 leading-snug transition-all duration-200 border-l-2 -ml-px",
+                    paddingByLevel[level] ?? "pl-10",
+                    sizeByLevel[level] ?? "text-[0.7rem]",
                     activeId === id
                       ? "active border-[#a78bfa] font-medium"
                       : "border-transparent"

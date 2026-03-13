@@ -3,13 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build && npx tsx scripts/generate-seo.ts && cp build/client/__spa-fallback.html build/client/404.html",
+    "build": "npx tsx scripts/lint-images.ts && react-router build && npx tsx scripts/generate-seo.ts && cp build/client/__spa-fallback.html build/client/404.html",
+    "lint:images": "npx tsx scripts/lint-images.ts",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@base-ui/react": "^1.2.0",
     "@fontsource-variable/geist": "^5.2.8",
     "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
@@ -17,16 +19,16 @@
     "@react-router/serve": "7.12.0",
     "@shikijs/rehype": "^4.0.2",
     "@shikijs/transformers": "^4.0.2",
+    "@unpic/react": "^1.0.2",
     "@vercel/analytics": "^2.0.0",
     "@vercel/speed-insights": "^2.0.0",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "flexsearch": "^0.8.212",
     "glob": "^13.0.6",
     "gray-matter": "^4.0.3",
     "isbot": "^5.1.31",
     "lucide-react": "^0.577.0",
-    "motion": "^12.35.2",
     "nprogress": "^0.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -53,6 +55,7 @@
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.0"
   }
 }

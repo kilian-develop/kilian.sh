@@ -31,6 +31,16 @@ export function getTagColor(index: number): string {
   return TAG_COLORS[index % TAG_COLORS.length];
 }
 
+export function buildMeta(title: string, description: string, path: string) {
+  return [
+    { title: `${title} | ${siteConfig.title}` },
+    { name: "description", content: description },
+    { property: "og:title", content: `${title} | ${siteConfig.title}` },
+    { property: "og:description", content: description },
+    { tagName: "link", rel: "canonical", href: `${siteConfig.url}${path}` },
+  ];
+}
+
 export const techTags = [
   "Java",
   "Spring Boot",

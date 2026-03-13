@@ -1,10 +1,32 @@
-import { motion, type Variants } from "motion/react";
-import type { CSSProperties, ReactNode } from "react";
+import { useRef, useEffect, useState, type ReactNode, type CSSProperties } from "react";
+import { cn } from "~/lib/utils";
 
-const fadeUpVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-};
+/**
+ * Lightweight IntersectionObserver hook.
+ * Triggers once when element enters viewport.
+ */
+function useInView(margin = "-80px") {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.unobserve(el);
+        }
+      },
+      { rootMargin: margin },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [margin]);
+
+  return { ref, inView };
+}
 
 interface FadeInProps {
   children: ReactNode;
@@ -14,53 +36,50 @@ interface FadeInProps {
 
 /**
  * Scroll-triggered fade-in animation.
- * Replaces CSS `animate-fade-up` with intersection-based triggering.
+ * Zero-dependency replacement for motion's whileInView.
  */
 export function FadeIn({ children, delay = 0, className }: FadeInProps) {
+  const { ref, inView } = useInView();
+
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      variants={fadeUpVariants}
-      className={className}
+    <div
+      ref={ref}
+      className={cn(
+        "transition-[opacity,transform] duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+        className,
+      )}
+      style={delay > 0 ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
 /**
  * Container for staggered child animations.
- * Children should use <StaggerItem> to participate in the stagger.
+ * Children should use <StaggerItem> to participate.
  */
 export function StaggerContainer({
   children,
   className,
   style,
-  stagger = 0.06,
 }: {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
   stagger?: number;
 }) {
+  const { ref, inView } = useInView();
+
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ staggerChildren: stagger }}
-      className={className}
+    <div
+      ref={ref}
+      className={cn("stagger-container", inView && "is-visible", className)}
       style={style}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -72,12 +91,8 @@ export function StaggerItem({
   className?: string;
 }) {
   return (
-    <motion.div
-      variants={fadeUpVariants}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
+    <div className={cn("stagger-item", className)}>
       {children}
-    </motion.div>
+    </div>
   );
 }

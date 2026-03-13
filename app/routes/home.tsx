@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, BookOpen } from "lucide-react";
+import { Image } from "@unpic/react";
 import type { Route } from "./+types/home";
 import { getAllPosts, type PostMeta } from "~/lib/posts.server";
 import { formatDateFull, formatDateShort } from "~/lib/format";
@@ -12,7 +13,7 @@ import {
 
 export async function loader(_: Route.LoaderArgs) {
   const allPosts = await getAllPosts();
-  return { recentPosts: allPosts.slice(0, 5) };
+  return { recentPosts: allPosts.slice(0, 7) };
 }
 
 export function meta(_: Route.MetaArgs) {
@@ -78,17 +79,27 @@ function FeaturedPostCard({ post }: { post: PostMeta }) {
               {post.title}
             </h3>
 
-            <p className="text-sm text-white/35 leading-relaxed line-clamp-3 max-w-lg">
+            <p className="text-sm text-white/35 leading-relaxed line-clamp-3 max-w-lg break-keep">
               {post.excerpt}
             </p>
           </div>
 
           <div className="hidden md:flex flex-col items-center justify-center h-full">
             <div className="relative w-full aspect-square max-w-[200px]">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[rgba(139,92,246,0.08)] via-[rgba(96,165,250,0.06)] to-[rgba(94,234,212,0.04)] border border-white/[0.04]" />
-              <div className="absolute inset-4 rounded-xl border border-white/[0.03] flex items-center justify-center">
-                <BookOpen className="size-8 text-white/10" />
-              </div>
+              {post.thumbnail ? (
+                <img
+                  src={post.thumbnail}
+                  alt={post.title}
+                  className="absolute inset-0 w-full h-full object-contain rounded-2xl p-4"
+                />
+              ) : (
+                <>
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[rgba(139,92,246,0.08)] via-[rgba(96,165,250,0.06)] to-[rgba(94,234,212,0.04)] border border-white/[0.04]" />
+                  <div className="absolute inset-4 rounded-xl border border-white/[0.03] flex items-center justify-center">
+                    <BookOpen className="size-8 text-white/10" />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -135,7 +146,7 @@ function PostCard({ post }: { post: PostMeta }) {
           {post.title}
         </h3>
 
-        <p className="text-sm text-white/35 leading-relaxed line-clamp-3 mb-4">
+        <p className="text-sm text-white/35 leading-relaxed line-clamp-3 mb-4 break-keep">
           {post.excerpt}
         </p>
 
@@ -262,10 +273,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <div className="glass-card p-8 md:p-12 overflow-hidden">
               <div className="grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-start">
                 <div className="flex flex-col items-center md:items-start gap-4">
-                  <div className="relative size-20 rounded-full bg-gradient-to-br from-[rgba(139,92,246,0.2)] via-[rgba(96,165,250,0.15)] to-[rgba(94,234,212,0.1)] border border-white/[0.08] flex items-center justify-center">
-                    <span className="font-heading font-semibold text-xl text-white/50">
-                      K
-                    </span>
+                  <div className="relative size-20 rounded-full bg-gradient-to-br from-[rgba(139,92,246,0.2)] via-[rgba(96,165,250,0.15)] to-[rgba(94,234,212,0.1)] border border-white/[0.08] overflow-hidden">
+                    <Image
+                      src="/images/profile.jpg"
+                      alt="kilian 프로필"
+                      width={80}
+                      height={80}
+                      layout="fullWidth"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/[0.08] rounded-full" />
                   </div>
 
                   <div className="text-center md:text-left">

@@ -1,45 +1,54 @@
-import { Link } from "react-router";
-import { Github, Mail, Linkedin, ArrowRight } from "lucide-react";
+import { GraduationCap, Award, Building2, Calendar } from "lucide-react";
+import { Image } from "@unpic/react";
 import type { Route } from "./+types/about";
-import { cn } from "~/lib/utils";
-import { siteConfig } from "~/data/site";
+import { cn, staggerClass } from "~/lib/utils";
+import { siteConfig, buildMeta } from "~/data/site";
+import { ContactCTA } from "~/components/shared/contact-cta";
 
 export function meta(_: Route.MetaArgs) {
-  const description = `백엔드 개발자 ${siteConfig.name}의 소개 페이지입니다. 클린 아키텍처, DDD, Spring/Java 개발을 탐구합니다.`;
-  return [
-    { title: `소개 | ${siteConfig.title}` },
-    { name: "description", content: description },
-    { property: "og:title", content: `소개 | ${siteConfig.title}` },
-    { property: "og:description", content: description },
-    { tagName: "link", rel: "canonical", href: `${siteConfig.url}/about` },
-  ];
+  return buildMeta(
+    "소개",
+    "백엔드 개발자 박명규의 소개 페이지입니다. 확장성과 지속 가능성을 중심으로 서비스를 개발합니다.",
+    "/about",
+  );
 }
 
 const skills = {
-  Backend: ["Java", "Spring Boot", "Spring Framework", "JPA / Hibernate", "Spring Batch", "Spring Security"],
-  "Data & Messaging": ["Kafka", "MariaDB", "MongoDB"],
+  Backend: ["Java", "Spring Boot", "Spring MVC", "Spring Security", "Spring Batch", "JPA / Hibernate"],
+  "Data & Messaging": ["Kafka", "MariaDB", "MongoDB", "Redis"],
   Infrastructure: ["Docker", "Git", "GitHub Actions", "Linux"],
-  "Architecture & Design": ["클린 아키텍처", "DDD", "마이크로서비스", "SOLID"],
+  "Architecture & Design": ["클린 아키텍처", "DDD", "이벤트 기반 아키텍처", "SOLID"],
 } as const;
 
+const career = [
+  {
+    company: "무하유",
+    role: "백엔드 개발자",
+    period: "2023.07 ~ 현재",
+    highlights: [
+      "카피킬러 표절검사 서비스 운영 및 개선",
+      "GPT Killer 서비스 개발 및 운영",
+      "문서 전처리 파이프라인 이벤트 기반 아키텍처 재설계",
+      "2억건+ 데이터 마이그레이션 설계 및 수행",
+    ],
+  },
+  {
+    company: "커먼컴퓨터",
+    role: "인턴",
+    period: "2021.06 ~ 2021.08",
+    highlights: [
+      "AI를 활용한 검색엔진 서비스 개발",
+      "Jina AI Framework 워크샵 발표",
+    ],
+  },
+] as const;
+
 const philosophy = [
-  { title: "도메인 이해 우선", description: "기술보다 비즈니스 규칙을 먼저 이해합니다." },
-  { title: "SOLID 원칙", description: "확장성 있는 설계를 지향합니다." },
-  { title: "테스트 주도 개발", description: "안정적인 코드를 위해 테스트를 먼저 작성합니다." },
-  { title: "지속적인 학습", description: "새로운 기술과 패턴을 꾸준히 습득합니다." },
+  { title: "흔들리지 않는 기반", description: "코드부터 설계까지, 안정적이고 유지보수하기 쉬운 서비스를 만듭니다." },
+  { title: "확장 가능한 구조", description: "변화에 유연하게 대응할 수 있는 아키텍처를 지향합니다." },
+  { title: "문제 해결 중심", description: "기술 선택의 근거와 트레이드오프를 고민합니다." },
+  { title: "지속적인 성장", description: "경험을 글로 정리하며 깊이 있는 이해를 추구합니다." },
 ] as const;
-
-const blogTopics = [
-  "객체지향 프로그래밍 — 설계 원칙과 패턴",
-  "아키텍처 설계 — 클린 아키텍처, 마이크로서비스",
-  "Spring Framework — 활용법과 Best Practice",
-  "Kafka — 메시지 처리와 실시간 데이터",
-  "데이터베이스 — MariaDB, MongoDB 활용",
-  "개발 도구 — Claude Code, Git 등",
-] as const;
-
-const staggerClass = (i: number) =>
-  `stagger-${Math.min(i + 1, 8)}` as const;
 
 export default function About() {
   return (
@@ -47,43 +56,109 @@ export default function About() {
       {/* ===== HERO SECTION ===== */}
       <section className="pt-24 pb-16 md:pt-36 md:pb-24 px-4">
         <div className="max-w-[1100px] mx-auto px-4 md:px-8">
-          {/* Section label */}
           <div className="animate-fade-up mb-10">
             <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)]">
               About Me
             </span>
           </div>
 
-          <div className="flex items-start gap-6 md:gap-10 mb-8">
-            {/* Avatar */}
+          <div className="flex flex-col sm:flex-row items-start gap-6 md:gap-10 mb-8">
+            {/* Profile Image */}
             <div className="animate-fade-up stagger-1 flex-shrink-0">
-              <div className="relative size-16 md:size-20 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(139,92,246,0.3)] via-[rgba(59,130,246,0.2)] to-[rgba(94,234,212,0.15)]" />
-                <div className="relative flex items-center justify-center h-full">
-                  <span className="font-heading text-xl md:text-2xl font-semibold text-white/90">
-                    K
-                  </span>
-                </div>
+              <div className="relative size-24 md:size-32 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-[10px] overflow-hidden">
+                <Image
+                  src="/images/profile.jpg"
+                  alt="박명규 프로필"
+                  width={128}
+                  height={128}
+                  layout="fullWidth"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 ring-1 ring-inset ring-white/[0.08] rounded-2xl" />
               </div>
             </div>
 
             <div>
               <h1 className="animate-fade-up stagger-2 font-heading text-4xl md:text-6xl font-semibold leading-tight tracking-tight text-white/90 mb-2">
-                kilian
+                박명규
               </h1>
-              <p className="animate-fade-up stagger-3 text-lg font-mono text-[rgba(139,92,246,0.7)]">
+              <p className="animate-fade-up stagger-3 text-lg font-mono text-[rgba(139,92,246,0.7)] mb-3">
                 Backend Developer
               </p>
+              <div className="animate-fade-up stagger-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/40">
+                <span className="flex items-center gap-1.5">
+                  <GraduationCap className="size-3.5" />
+                  강원대학교 컴퓨터공학과
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Award className="size-3.5" />
+                  정보처리기사
+                </span>
+              </div>
             </div>
           </div>
 
-          <p className="animate-fade-up stagger-4 text-lg md:text-xl text-white/75 leading-relaxed max-w-2xl text-balance">
-            "좋은 설계는 변화에 유연하고, 좋은 코드는 의도를 명확히 합니다."
+          <p className="animate-fade-up stagger-5 text-lg md:text-xl text-white/75 leading-relaxed max-w-2xl text-balance">
+            "흔들리지 않는 기반을 만듭니다."
           </p>
-          <p className="animate-fade-up stagger-5 text-base text-white/55 leading-relaxed max-w-2xl mt-4">
-            Java와 Spring Framework를 중심으로 백엔드 서비스를 개발하고 있습니다.
-            확장 가능하고 유지보수하기 쉬운 코드를 작성하는 것을 지향합니다.
+          <p className="animate-fade-up stagger-6 text-base text-white/55 leading-relaxed max-w-2xl mt-4">
+            확장성과 지속 가능성을 중심에 두고 서비스 개발을 해온 백엔드 개발자입니다.
+            <br />
+            코드부터 소프트웨어 설계까지 안정적이고 유지보수하기 쉬운 서비스를 만들기 위한 고민을 바탕으로 구현하는 데 강점을 가지고 있습니다.
           </p>
+        </div>
+      </section>
+
+      {/* Orb divider */}
+      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+        <div className="section-orb" />
+      </div>
+
+      {/* ===== CAREER SECTION ===== */}
+      <section className="py-16 md:py-24 px-4">
+        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
+          <div className="animate-fade-up mb-12">
+            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
+              Career
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
+              경력
+            </h2>
+          </div>
+
+          <div className="space-y-6 max-w-3xl">
+            {career.map((item, i) => (
+              <div
+                key={item.company}
+                className={cn(
+                  "animate-fade-up glass-card p-6 md:p-8",
+                  staggerClass(i)
+                )}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-3">
+                    <Building2 className="size-5 text-[rgba(139,92,246,0.6)]" />
+                    <h3 className="font-heading text-lg font-semibold text-white/90">
+                      {item.company}
+                    </h3>
+                    <span className="text-sm text-white/45">{item.role}</span>
+                  </div>
+                  <span className="flex items-center gap-1.5 font-mono text-xs text-white/35">
+                    <Calendar className="size-3.5" />
+                    {item.period}
+                  </span>
+                </div>
+                <ul className="space-y-2">
+                  {item.highlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2.5 text-sm text-white/55 leading-relaxed">
+                      <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.4)] mt-1.5 flex-shrink-0" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -100,7 +175,7 @@ export default function About() {
               Philosophy
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
-              학습 철학
+              개발 철학
             </h2>
           </div>
 
@@ -170,100 +245,13 @@ export default function About() {
         <div className="section-orb" />
       </div>
 
-      {/* ===== BLOG TOPICS SECTION ===== */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
-          <div className="animate-fade-up mb-12">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
-              Topics
-            </span>
-            <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90">
-              블로그 주제
-            </h2>
-          </div>
-
-          <div className="space-y-3 max-w-3xl">
-            {blogTopics.map((topic, i) => (
-              <div
-                key={topic}
-                className={cn(
-                  "animate-fade-up flex items-center gap-3 px-4 py-3 rounded-lg border border-white/[0.04] bg-white/[0.02] hover:border-[rgba(139,92,246,0.15)] hover:bg-[rgba(139,92,246,0.03)] transition-all",
-                  staggerClass(i)
-                )}
-              >
-                <div className="size-1.5 rounded-full bg-[rgba(139,92,246,0.5)] flex-shrink-0" />
-                <p className="text-sm text-white/60">{topic}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Orb divider */}
-      <div className="max-w-[1100px] mx-auto px-4 md:px-8">
-        <div className="section-orb" />
-      </div>
-
       {/* ===== CONTACT SECTION ===== */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="max-w-[1100px] mx-auto px-4 md:px-8">
-          <div className="animate-fade-up mb-10">
-            <span className="font-mono text-[0.7rem] uppercase tracking-[0.15em] text-[rgba(139,92,246,0.5)] block mb-3">
-              Contact
-            </span>
-            <h2 className="font-heading text-3xl md:text-4xl font-semibold text-white/90 mb-4">
-              연락하기
-            </h2>
-            <p className="text-white/75 leading-relaxed max-w-lg">
-              함께 고민하고 싶은 주제가 있거나, 피드백이 있다면 언제든지
-              연락 주세요. 이야기 나누는 것을 좋아합니다.
-            </p>
-          </div>
-
-          <div className="animate-fade-up stagger-2 flex flex-wrap gap-3">
-            <a
-              href={siteConfig.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.08] text-sm text-white/55 hover:text-white/85 hover:border-[rgba(139,92,246,0.3)] hover:bg-[rgba(139,92,246,0.06)] transition-all"
-            >
-              <Github className="size-4" />
-              GitHub
-            </a>
-
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.08] text-sm text-white/55 hover:text-white/85 hover:border-[rgba(139,92,246,0.3)] hover:bg-[rgba(139,92,246,0.06)] transition-all"
-            >
-              <Mail className="size-4" />
-              Email
-            </a>
-
-            <a
-              href={siteConfig.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/[0.08] text-sm text-white/55 hover:text-white/85 hover:border-[rgba(139,92,246,0.3)] hover:bg-[rgba(139,92,246,0.06)] transition-all"
-            >
-              <Linkedin className="size-4" />
-              LinkedIn
-            </a>
-          </div>
-
-          <div className="animate-fade-up stagger-3 mt-12 pt-8 border-t border-white/[0.06]">
-            <p className="text-sm text-white/25 mb-4">
-              블로그 글도 함께 읽어보세요
-            </p>
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-sm text-white/55 hover:text-white/85 transition-colors"
-            >
-              모든 글 보기
-              <ArrowRight className="size-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ContactCTA
+        title="연락하기"
+        description="함께 고민하고 싶은 주제가 있거나, 피드백이 있다면 언제든지 연락 주세요. 이야기 나누는 것을 좋아합니다."
+        showLinkedin
+        showBlogLink
+      />
     </div>
   );
 }
