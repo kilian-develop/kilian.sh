@@ -16,7 +16,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Route } from "./+types/root";
 import { Header } from "~/components/layout/header";
 import { Footer } from "~/components/layout/footer";
-import { Analytics as GAAnalytics } from "~/components/analytics";
+import { GTMScript, GTMNoScript } from "~/components/analytics";
 import { siteConfig } from "~/data/site";
 import "./app.css";
 
@@ -61,9 +61,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <GAAnalytics />
+        <GTMScript />
       </head>
       <body className="">
+        <GTMNoScript />
         <VercelAnalytics />
         <SpeedInsights />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

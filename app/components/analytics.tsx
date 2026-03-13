@@ -1,32 +1,30 @@
-/**
- * Google Analytics 4 integration.
- * Activate by setting VITE_GA_MEASUREMENT_ID in your environment.
- * When the env var is absent, nothing is rendered.
- */
-export function Analytics() {
-  const gaId =
-    typeof import.meta.env !== "undefined"
-      ? import.meta.env.VITE_GA_MEASUREMENT_ID
-      : undefined;
+const GTM_ID = "GTM-PVN24H29";
 
-  if (!gaId) return null;
-
+/** Google Tag Manager — <head> script */
+export function GTMScript() {
   return (
-    <>
-      <script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`,
+      }}
+    />
+  );
+}
+
+/** Google Tag Manager — <body> noscript fallback */
+export function GTMNoScript() {
+  return (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+        height="0"
+        width="0"
+        style={{ display: "none", visibility: "hidden" }}
       />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${gaId}');
-          `,
-        }}
-      />
-    </>
+    </noscript>
   );
 }
