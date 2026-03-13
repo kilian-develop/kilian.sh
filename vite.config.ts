@@ -15,6 +15,7 @@ import {
 } from "@shikijs/transformers";
 import type { ShikiTransformer } from "shiki";
 import { rehypeMark } from "./app/lib/rehype-mark";
+import { remarkBoldFix } from "./app/lib/remark-bold-fix";
 import { defineConfig } from "vite";
 
 /** Shiki transformer: inject data-language on <code> element */
@@ -34,7 +35,7 @@ export default defineConfig({
       enforce: "pre",
       ...mdx({
         providerImportSource: "@mdx-js/react",
-        remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
+        remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter, remarkBoldFix],
         rehypePlugins: [
           rehypeMark,
           rehypeSlug,
